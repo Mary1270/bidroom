@@ -866,7 +866,7 @@
   <div><a class="brand" href="#/" style="display:flex"><span>Bid<b>Room</b></span></a><p>Freelance work won on written criteria. Blind AI selection, milestone payments, disputes and refunds, all in one GenLayer Intelligent Contract.</p></div>
   <div><h4>Product</h4><a href="#/">Explore projects</a><a href="#/new">Post a project</a><a href="#/me">My account</a><a href="#/how">How it works</a></div>
   <div><h4>Contract</h4><p class="mono" id="contractAddrText" style="margin:0;word-break:break-all"></p>
-    <a href="#" id="copyContract">Copy contract address</a><a href="https://explorer-studio.genlayer.com" target="_blank" rel="noopener noreferrer">GenLayer Studio explorer &nearr;</a>
+    <a href="#" id="copyContract">Copy contract address</a><a href="https://explorer-studio.genlayer.com" id="explorerLink" target="_blank" rel="noopener noreferrer">View contract on the explorer &nearr;</a>
     <p>Studio network (chain 61999). No-build frontend using genlayer-js.</p></div>
 </div></footer>
 
@@ -881,8 +881,9 @@
 import { createClient, createAccount } from "https://esm.sh/genlayer-js@latest";
 import { studionet } from "https://esm.sh/genlayer-js@latest/chains";
 
-const DEFAULT_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+const DEFAULT_CONTRACT_ADDRESS = "0x6e15D62F640a8D0B3AD360207380134bFfCA52E2";
 const ZERO = "0x0000000000000000000000000000000000000000";
+const EXPLORER = "https://explorer-studio.genlayer.com";
 const DEAD = "0x000000000000000000000000000000000000dEaD";
 const LIST_LIMIT = 20;
 const $ = (id) => document.getElementById(id);
@@ -900,6 +901,7 @@ function resolveContract() {
 let CONTRACT_ADDRESS = resolveContract();
 function showContract() {
   $("contractAddrText").textContent = CONTRACT_ADDRESS === ZERO ? "not set" : CONTRACT_ADDRESS;
+  $("explorerLink").setAttribute("href", CONTRACT_ADDRESS === ZERO ? EXPLORER : EXPLORER + "/address/" + CONTRACT_ADDRESS);
   $("noContract").classList.toggle("hide", CONTRACT_ADDRESS !== ZERO);
 }
 showContract();
@@ -1894,7 +1896,8 @@ async function loadMe() {
   $("meProfileLink").style.display = account ? "inline-block" : "none";
   const av = avatar(account || "0x0"); av.classList.add("big"); av.id = "meAv"; $("meAv").replaceWith(av);
   const books = clear($("booksBox"));
-  try {
+  if (CONTRACT_ADDRESS === ZERO) { books.textContent = "Set the contract address to see the contract's books."; }
+  else try {
     const a = await readJson("get_accounting");
     books.append(h("div", { text: `Contract holds ${gen(a.contract_balance)}` }), h("div", { class: "faint", text: `Locked in projects ${gen(a.locked_in_projects)} + claimable ${gen(a.pending_withdrawals)}` }),
       h("span", { class: "pill " + (a.balanced ? "good" : "bad"), style: "margin-top:8px", text: a.balanced ? "Books balance" : "Books do not balance" }));

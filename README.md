@@ -4,6 +4,9 @@ A freelance project auction on GenLayer. A client locks a budget and writes how 
 
 Single Intelligent Contract (`contract.py`), no-build frontend (`index.html`), offline test suite (`tests/`).
 
+- Contract on GenLayer Studio: `0x6e15D62F640a8D0B3AD360207380134bFfCA52E2` ([explorer](https://explorer-studio.genlayer.com/address/0x6e15D62F640a8D0B3AD360207380134bFfCA52E2))
+- Live app: https://mary1270.github.io/bidroom/
+
 ## Roles
 
 | Role | Who | Can do |
