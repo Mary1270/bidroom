@@ -1,0 +1,60 @@
+name: Unpack zip and run tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Unpack an uploaded zip
+        id: unpack
+        if: github.event_name != 'pull_request'
+        run: |
+          set -e
+          ZIP=$(ls -t ./*.zip 2>/dev/null | head -n 1 || true)
+          if [ -z "$ZIP" ]; then
+            echo "No zip in the repository root. Nothing to unpack."
+            echo "unpacked=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Unpacking $ZIP"
+          rm -rf _unpack
+          mkdir _unpack
+          unzip -q -o "$ZIP" -d _unpack
+          rm -rf _unpack/__MACOSX
+          if [ "$(ls -A _unpack | wc -l)" -eq 1 ] && [ -d "_unpack/$(ls -A _unpack)" ] && [ "$(ls -A _unpack)" != ".github" ]; then
+            SRC="_unpack/$(ls -A _unpack)"
+          else
+            SRC="_unpack"
+          fi
+          rm -rf "$SRC/.github" "$SRC/.git"
+          cp -a "$SRC"/. .
+          rm -rf _unpack "$ZIP"
+          echo "unpacked=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit the unpacked files
+        if: steps.unpack.outputs.unpacked == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Unpack project zip" || echo "Nothing to commit"
+          git push
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run the offline test suite
+        run: |
+          if [ -d tests ]; then python3 -m unittest discover -s tests -v; else echo "No tests folder yet"; fi
