@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from _bootstrap import (ALICE, BOB, BOND, BUDGET, CAROL, CLIENT, CLOCK, DELIVERY_URL, STRANGER, FakeWorld, UserError,
+from _bootstrap import (ALICE, BOB, BOND, BUDGET, CAROL, CLIENT, CLOCK, DELIVERY_URL, PAGE_TEXT, STRANGER, FakeWorld, UserError,
                         World, assert_balanced, create_project, get, make_contract, place_bid, set_caller,
                         to_delivery, to_selection, withdraw)
 
@@ -166,6 +166,57 @@ class TestViews(unittest.TestCase):
         with self.assertRaises(UserError):
             set_caller(BOB)
             self.c.withdraw()
+
+    def test_activity_feed_merges_all_projects_newest_first(self):
+        to_delivery(self.c)
+        CLOCK.minutes(1)
+        create_project(self.c, title="Second project title")
+        feed = json.loads(self.c.get_activity(4))
+        self.assertEqual(len(feed), 4)
+        self.assertEqual((feed[0]["event"], feed[0]["project_id"], feed[0]["title"]), ("project_created", "project_1", "Second project title"))
+        self.assertEqual(feed[1]["event"], "award_confirmed")
+        times = [e["t"] for e in feed]
+        self.assertEqual(times, sorted(times, reverse=True))
+        self.assertEqual(len(json.loads(self.c.get_activity(999))), 6)
+        self.assertEqual(len(json.loads(self.c.get_activity(0))), 1)
+
+    def test_address_projects_cover_every_role(self):
+        to_delivery(self.c)
+        create_project(self.c)
+        client = json.loads(self.c.get_address_projects(CLIENT))
+        self.assertEqual([r["project_id"] for r in client], ["project_1", "project_0"])
+        self.assertTrue(all(r["roles"] == ["client"] for r in client))
+        alice = json.loads(self.c.get_address_projects(ALICE.upper().replace("0X", "0x")))
+        self.assertEqual(len(alice), 1)
+        self.assertEqual(alice[0]["roles"], ["bidder", "winner"])
+        self.assertEqual(alice[0]["my_bids"][0]["status"], "won")
+        self.assertIn("released", alice[0])
+        bob = json.loads(self.c.get_address_projects(BOB))
+        self.assertEqual((bob[0]["roles"], bob[0]["my_bids"][0]["status"]), (["bidder"], "lost"))
+        self.assertEqual(json.loads(self.c.get_address_projects(STRANGER)), [])
+
+    def test_rulings_keep_the_evidence_they_judged(self):
+        to_delivery(self.c)
+        set_caller(ALICE)
+        self.c.submit_milestone("project_0", 0, DELIVERY_URL, "first try")
+        set_caller(CLIENT)
+        self.c.dispute_milestone("project_0", 0, "The first version misses the setup part")
+        FakeWorld.ruling = "REJECTED"
+        set_caller(STRANGER)
+        self.c.rule_dispute("project_0", 0)
+        set_caller(ALICE)
+        self.c.submit_milestone("project_0", 0, "https://example.com/second.md", "second try")
+        set_caller(CLIENT)
+        self.c.dispute_milestone("project_0", 0, "Still not complete, the setup part is thin")
+        FakeWorld.pages["https://example.com/second.md"] = PAGE_TEXT
+        FakeWorld.ruling = "ACCEPTED"
+        set_caller(BOB)
+        self.c.rule_dispute("project_0", 0)
+        first, second = get(self.c)["milestones"][0]["rulings"]
+        self.assertEqual((first["delivery_url"], first["note"], first["complaint"], first["ruled_by"]),
+                         (DELIVERY_URL, "first try", "The first version misses the setup part", STRANGER))
+        self.assertEqual((second["delivery_url"], second["note"], second["ruled_by"]), ("https://example.com/second.md", "second try", BOB))
+        self.assertTrue(first["submitted_at"] and first["disputed_at"])
 
     def test_unknown_project_views_raise(self):
         for fn in (self.c.get_project, self.c.get_bids, self.c.get_milestones, self.c.get_history, self.c.get_phase):

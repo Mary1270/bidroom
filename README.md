@@ -43,7 +43,9 @@ Nothing is sent automatically. Every payout is credited to a withdrawable balanc
 
 Writes: `create_project` (payable), `cancel_project`, `place_bid` (payable), `withdraw_bid`, `select_winner`, `expire_unbid`, `expire_unselected`, `confirm_award`, `decline_award`, `void_award`, `submit_milestone`, `approve_milestone`, `claim_unreviewed`, `dispute_milestone`, `rule_dispute`, `expire_dispute`, `refund_undelivered`, `withdraw`.
 
-Read-only: `get_project`, `list_projects`, `total_projects`, `get_phase`, `get_actions` (roles and the exact actions an address may take right now), `get_bids`, `get_milestones`, `get_history`, `get_selection`, `get_stats`, `get_profile`, `get_pending_withdrawal`, `get_contract_balance`, `get_accounting`.
+Read-only: `get_project`, `list_projects`, `total_projects`, `get_phase`, `get_actions` (roles and the exact actions an address may take right now), `get_bids`, `get_milestones`, `get_history`, `get_selection`, `get_stats`, `get_profile`, `get_address_projects` (every project an address took part in, with its roles, bids and payouts), `get_activity` (the latest events across all projects), `get_pending_withdrawal`, `get_contract_balance`, `get_accounting`.
+
+Every arbitration ruling stores the evidence it judged: the delivery link, the freelancer's note, the client's complaint, the verbatim quote, the reasoning, timestamps and the address that triggered it.
 
 `get_accounting` proves the books: contract balance equals GEN locked in projects plus claimable balances.
 
@@ -57,9 +59,15 @@ Both AI steps run through `gl.vm.run_nondet_unsafe` with a leader function and a
 
 ## Frontend
 
-`index.html` talks to the contract through `genlayer-js`. It shows the current phase on a five-step tracker with a live countdown, who the page is waiting for, a "Your move" panel that contains only what the connected wallet may do now (taken from `get_actions`), and a "Who can do what right now" panel for all roles. Other pages: explorer with phase filters, guided project creation, account and profile, and an explainer.
+`index.html` is a single no-build page that talks to the contract through `genlayer-js`. Everything it shows is read from the contract; nothing is simulated.
 
-Open it with `?contract=0xYourAddress` once, or paste the address in the wallet menu. It is remembered in the browser.
+- **Explore:** live contract activity, escrow totals with a balance check, project cards with phase, countdown and budget, search, sort, filters, grid or list.
+- **Project:** phase tracker with live countdown, a "Your move" panel built from `get_actions`, who-can-do-what for every role, an escrow ledger that reconciles every GEN in and out, the AI selection report (score matrix, weights, qualifying line, reasoning, digests), bids with each bidder's on-chain track record, milestones with payment splits, an arbitration report for every ruling (written rule, delivered evidence, verbatim quote, both parties' claims, reasoning, payout effect), and the on-chain event log.
+- **Public profiles** (`#/u/<address>`): reliability, earnings, escrowed budgets, rulings and a record of every project the address took part in.
+- **Post a project:** four-step wizard with templates and a live preview.
+- **Transactions:** a status panel that follows the transaction from wallet signature to finalization and shows the node's consensus status while validators work.
+
+Open it with `?contract=0xYourAddress` once, or paste the address in the setup card. It is remembered in the browser.
 
 ## Tests
 

@@ -54,7 +54,8 @@ class TestFrontend(unittest.TestCase):
             self.assertIn(name, used)
 
     def test_every_view_used_by_the_ui_exists(self):
-        for name in ("list_projects", "get_stats", "get_project", "get_actions", "get_profile", "get_accounting", "get_pending_withdrawal"):
+        for name in ("list_projects", "get_stats", "get_project", "get_actions", "get_profile", "get_accounting", "get_pending_withdrawal",
+                     "get_activity", "get_address_projects"):
             self.assertIn(name, methods("view"))
             self.assertIn(f'"{name}"', script())
 
@@ -93,6 +94,25 @@ class TestFrontend(unittest.TestCase):
 
     def test_bid_price_is_checked_against_the_budget(self):
         self.assertIn("BigInt(pr) * WEI_PER_GEN > BigInt(p.budget)", script())
+
+    def test_no_staged_demo_data_on_the_page(self):
+        for fake in ("Landing page redesign &middot; 3 bids", "100 GEN budget locked", "Winner picked on C1, C2, C3"):
+            self.assertNotIn(fake, HTML)
+
+    def test_public_profiles_and_arbitration_report(self):
+        js = script()
+        self.assertIn('startsWith("#/u/")', js)
+        self.assertIn("function arbitrationReport(", js)
+        self.assertIn("function selectionReport(", js)
+        self.assertIn("function escrowCard(", js)
+        for field in ("r.quote", "r.complaint", "r.delivery_url", "m.acceptance", "r.ruled_by"):
+            self.assertIn(field, js)
+
+    def test_event_names_match_the_contract(self):
+        logged = set(re.findall(r'self\._log\(\s*project,\s*"([a-z_]+)"', CONTRACT))
+        mapped = set(re.findall(r'^\s*(?:const EVT = \{)?\s*((?:[a-z_]+: \[[^\]]*\],?\s*)+)', script(), re.M) and re.findall(r'([a-z_]+): \["(?:info|ai|risk|money)"', script()))
+        self.assertTrue(logged)
+        self.assertEqual(logged - mapped, set(), logged - mapped)
 
     def test_phase_tracker_and_role_panel_exist(self):
         for text in ("Your move", "Who can do what right now", '"Bidding"', '"Selection"', '"Delivery"', '"Dispute"', "get_actions"):

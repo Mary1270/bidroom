@@ -191,6 +191,8 @@
   .pc-art .badges{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:6px}
   .badge{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:800;backdrop-filter:blur(8px);background:rgba(10,8,6,.55);color:#fff;border:1px solid rgba(255,255,255,.14)}
   .badge .bd{width:7px;height:7px;border-radius:50%}
+  .badge{white-space:nowrap}
+  .pgrid.list .badges>*:nth-child(2){display:none}
   .badge.time{background:rgba(10,8,6,.45);font-variant-numeric:tabular-nums}
   .pc-art .art-title{position:absolute;left:14px;right:14px;bottom:12px;color:#fff;font-weight:900;font-size:21px;letter-spacing:-.02em;line-height:1.1;text-shadow:0 2px 12px rgba(0,0,0,.45);
                      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -223,6 +225,197 @@
   @media(max-width:760px){.steps4 div:nth-child(3){border-left:0}.steps4 div:nth-child(n+3){border-top:1px solid var(--line)}}
   .steps4 em{font-style:normal;font-size:30px;font-weight:900;letter-spacing:-.04em;background:linear-gradient(135deg,var(--brand),#FF4F8B);-webkit-background-clip:text;background-clip:text;color:transparent;display:block}
   .steps4 b{display:block;color:var(--ink);font-size:15px;margin:2px 0 4px}
+  .route.active{animation:fadeup .35s ease both}
+  @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-deep)}
+  .eyebrow:before{content:"";width:18px;height:2px;background:var(--brand);border-radius:2px}
+  .page-title{font-size:clamp(28px,5.4vw,44px);font-weight:900;letter-spacing:-.035em;margin:8px 0 6px}
+  .page-sub{color:var(--dim);max-width:640px;font-size:16px}
+
+  /* setup card */
+  .setup{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin:18px 0 6px;padding:16px 18px;border-radius:var(--radius);
+         border:1px solid rgba(255,210,63,.35);background:linear-gradient(135deg,rgba(255,210,63,.10),var(--paper) 70%)}
+  .setup .ico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--amber-soft);color:var(--amber);font-size:22px}
+  .setup-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .setup-row input{flex:1;min-width:220px;background:var(--paper)}
+  .setup-row button{width:auto;margin:0}
+  @media(max-width:560px){.setup{grid-template-columns:1fr}}
+
+  /* wallet sheet */
+  .opt{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:start;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--bg-2);margin-top:12px}
+  .opt .oi{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:20px}
+  .opt h3{margin:0}
+  .opt button,.opt input{margin-top:10px}
+
+  /* transaction dock */
+  .txdock{position:fixed;right:16px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:70;width:min(360px,calc(100vw - 32px));
+          border-radius:18px;border:1px solid var(--line);background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(14px);
+          box-shadow:0 20px 60px rgba(0,0,0,.45);padding:14px 16px;animation:fadeup .25s ease}
+  @media(min-width:761px){.txdock{bottom:24px}}
+  .txdock[hidden]{display:none}
+  .txhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .txhead b{font-size:14.5px}
+  .txx{cursor:pointer;color:var(--faint);font-weight:900;padding:2px 8px;border-radius:8px}
+  .txsteps{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:9px}
+  .txsteps li{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--faint)}
+  .txsteps li:before{content:"";width:16px;height:16px;border-radius:50%;border:2px solid var(--line);flex:none}
+  .txsteps li.now{color:var(--ink);font-weight:700}
+  .txsteps li.now:before{border-color:var(--brand);border-top-color:transparent;animation:s .8s linear infinite}
+  .txsteps li.done{color:var(--dim)}
+  .txsteps li.done:before{background:var(--green);border-color:var(--green)}
+  .txsteps li.fail{color:var(--red);font-weight:700}
+  .txsteps li.fail:before{background:var(--red);border-color:var(--red)}
+  .txmsg{margin-top:10px;font-size:12.5px;color:var(--dim);word-break:break-word}
+  .txbar{height:3px;border-radius:3px;background:var(--line);margin-top:12px;overflow:hidden}
+  .txbar i{display:block;height:100%;width:30%;background:linear-gradient(90deg,var(--brand),#FF4F8B);animation:slide 1.4s ease-in-out infinite}
+  .txdock.ok .txbar i,.txdock.err .txbar i{animation:none;width:100%}
+  .txdock.err .txbar i{background:var(--red)}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
+
+  /* wizard */
+  .wiz{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start;margin-top:18px}
+  @media(max-width:960px){.wiz{grid-template-columns:minmax(0,1fr)}}
+  .wiz-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+  .wstep{border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:var(--paper);cursor:pointer;text-align:left;margin:0;width:auto;color:var(--faint);font-weight:700}
+  .wstep small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+  .wstep span{display:block;font-size:14px;color:var(--dim);margin-top:2px}
+  .wstep.on{border-color:var(--brand);box-shadow:var(--glow)} .wstep.on span{color:var(--ink)}
+  .wstep.ok small{color:var(--green)}
+  @media(max-width:560px){.wstep span{display:none}.wstep{padding:10px 8px;text-align:center}}
+  .wiz-panel{display:none}
+  .wiz-panel.on{display:block;animation:fadeup .3s ease}
+  .wiz-nav{display:flex;gap:10px;margin-top:14px}
+  .wiz-nav button{margin:0}
+  .tpl{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 2px}
+  .wd{display:flex;gap:4px;align-items:center}
+  .wd button{width:26px;height:26px;padding:0;margin:0;border-radius:8px;background:var(--line);color:transparent;font-size:0}
+  .wd button.on{background:linear-gradient(135deg,var(--brand),#FF5E3A)}
+  .builder .line.crit{grid-template-columns:1fr auto 36px;align-items:center}
+  .preview{position:sticky;top:76px;display:grid;gap:12px}
+  .preview .pcard{pointer-events:none}
+  .sumlist{display:grid;gap:10px;font-size:14px}
+  .sumlist div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:8px}
+  .sumlist div:last-child{border-bottom:0}
+  .sumlist span{color:var(--faint)} .sumlist b{text-align:right}
+
+  /* account dashboard */
+  #route-me .layout .side{order:0}
+  .card.me-hero{display:grid;grid-template-columns:1.2fr 1fr;gap:0;padding:0;overflow:hidden}
+  @media(max-width:760px){.card.me-hero{grid-template-columns:1fr}}
+  .me-id{display:flex;gap:16px;align-items:center;padding:22px;background:radial-gradient(400px 200px at 0 0,rgba(255,138,31,.16),transparent 70%)}
+  .av.big{width:68px;height:68px;border-width:3px}
+  .me-id small,.me-bal small{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .me-bal{padding:22px;border-left:1px solid var(--line);background:var(--paper-2)}
+  @media(max-width:760px){.me-bal{border-left:0;border-top:1px solid var(--line)}}
+  .me-bal b{display:block;font-size:clamp(28px,5vw,40px);font-weight:900;letter-spacing:-.03em;margin:4px 0 2px}
+  .me-bal .btnrow{grid-template-columns:2fr 1fr}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  @media(max-width:620px){.tiles{grid-template-columns:repeat(2,1fr)}}
+  .tile{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--bg-2)}
+  .tile b{display:block;font-size:22px;font-weight:900;letter-spacing:-.02em}
+  .tile span{font-size:12px;color:var(--faint)}
+  .ring{display:flex;align-items:center;gap:16px}
+  .ring svg{width:92px;height:92px;flex:none}
+  .ring b{font-size:15px}
+
+  /* how it works */
+  .phase-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px;position:relative}
+  @media(max-width:860px){.phase-rail{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.phase-rail{grid-template-columns:1fr}}
+  .ph{position:relative;border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--paper);overflow:hidden}
+  .ph:before{content:"";position:absolute;inset:0 0 auto 0;height:3px}
+  .ph.b:before{background:#FF8A1F}.ph.s:before{background:#9A9BFF}.ph.d:before{background:#3DDC84}.ph.x:before{background:#FF6B6B}
+  .ph .num{font-size:12px;font-weight:800;color:var(--faint);letter-spacing:.1em}
+  .ph h3{font-size:19px;margin:6px 0 8px}
+  .ph p{color:var(--dim);font-size:14px;margin:0}
+  .ph .icon{position:absolute;right:14px;top:14px;font-size:24px;opacity:.85}
+  .roles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+  @media(max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .role{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--paper)}
+  .role .rb{display:inline-block;font-size:12px;font-weight:800;border-radius:8px;padding:3px 9px;margin-bottom:8px}
+  .role p{color:var(--dim);font-size:14px;margin:0}
+  .faq details{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:var(--paper);margin-top:10px}
+  .faq summary{font-size:15px}
+  .faq p{color:var(--dim);font-size:14px;margin:10px 0 0}
+  .money-table td:nth-child(2){color:var(--green);font-weight:700}
+  .money-table td:nth-child(3){color:var(--brand-deep);font-weight:700}
+
+  /* footer */
+  footer.foot{max-width:none;padding:0;margin-top:40px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--paper) 70%,transparent)}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:20px;padding:28px 16px 30px}
+  @media(max-width:760px){.foot-grid{grid-template-columns:1fr}}
+  .foot-grid h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+  .foot-grid a{display:block;color:var(--dim);text-decoration:none;font-size:14px;margin:6px 0}
+  .foot-grid p{color:var(--faint);font-size:13px;margin-top:8px}
+  /* live feed */
+  .feed{display:grid;gap:2px;margin-top:6px}
+  .ev{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px 8px;border-radius:12px;text-decoration:none;color:var(--ink)}
+  .ev:hover{background:var(--bg-2)}
+  .ev .ei{width:30px;height:30px;border-radius:9px;display:grid;place-items:center}
+  .ev .ei svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .ev b{font-size:13.5px;display:block;line-height:1.25}
+  .ev span{font-size:12px;color:var(--faint);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ev time{font-size:11.5px;color:var(--faint);white-space:nowrap}
+  .k-money{background:var(--green-soft);color:var(--green)} .k-ai{background:var(--indigo-soft);color:var(--indigo)}
+  .k-risk{background:var(--red-soft);color:var(--red)} .k-info{background:var(--brand-soft);color:var(--brand-deep)}
+  .escrow-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .escrow-mini div{font-size:11.5px;color:var(--faint)}
+  .escrow-mini b{display:block;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .ok-seal{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--green)}
+
+  /* escrow ledger */
+  .ledger-bar{display:flex;height:14px;border-radius:8px;overflow:hidden;background:var(--line);margin:14px 0 12px}
+  .ledger-bar span{height:100%}
+  .lrow{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:7px 0;font-size:14px;border-bottom:1px dashed var(--line)}
+  .lrow:last-child{border-bottom:0}
+  .lrow i{width:10px;height:10px;border-radius:3px}
+  .lrow b{font-variant-numeric:tabular-nums}
+  .lgroup{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:12px 0 2px}
+
+  /* selection matrix */
+  table.matrix{min-width:460px}
+  .matrix th,.matrix td{text-align:center;padding:8px 6px}
+  .matrix th:first-child,.matrix td:first-child{text-align:left}
+  .matrix td.sc{font-weight:900;font-variant-numeric:tabular-nums}
+  .sc0{background:rgba(255,107,107,.10);color:var(--red)} .sc1{background:rgba(255,210,63,.10);color:var(--amber)}
+  .sc2{background:rgba(61,220,132,.10);color:var(--green)} .sc3{background:rgba(61,220,132,.22);color:var(--green)}
+  .matrix tr.win td{box-shadow:inset 0 2px 0 var(--green),inset 0 -2px 0 var(--green)}
+  .matrix .tot{font-weight:900;color:var(--brand-deep)}
+  a.addr{color:var(--ink);text-decoration:none;font-family:var(--mono);font-size:.9em;border-bottom:1px dashed var(--faint)}
+  .rep{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .rep span{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:7px;background:var(--bg-2);border:1px solid var(--line);color:var(--dim)}
+  .rep span.g{color:var(--green);border-color:rgba(61,220,132,.35)} .rep span.r{color:var(--red);border-color:rgba(255,107,107,.35)}
+
+  /* arbitration report */
+  .arb{margin-top:12px;border-radius:16px;border:1px solid var(--line);background:var(--bg-2);overflow:hidden}
+  .arb-head{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .seal{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:20px;flex:none;border:2px solid currentColor}
+  .seal.ACCEPTED{color:var(--green);background:var(--green-soft)} .seal.PARTIAL{color:var(--amber);background:var(--amber-soft)}
+  .seal.REJECTED{color:var(--red);background:var(--red-soft)} .seal.TIMEOUT_SPLIT{color:var(--dim);background:var(--line)}
+  .arb-head b{display:block;font-size:15px}
+  .arb-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  @media(max-width:620px){.arb-grid{grid-template-columns:1fr}}
+  .arb-cell{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13.5px;min-width:0}
+  .arb-grid .arb-cell:nth-child(odd){border-right:1px solid var(--line)}
+  @media(max-width:620px){.arb-grid .arb-cell:nth-child(odd){border-right:0}}
+  .arb-cell h5{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .arb-cell a{word-break:break-all}
+  .arb-out{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .arb-out span{font-size:13px;font-weight:800;padding:5px 10px;border-radius:9px}
+  .arb-foot{padding:10px 14px;font-size:12px;color:var(--faint)}
+
+  /* milestone */
+  .ms-split{display:flex;height:6px;border-radius:4px;overflow:hidden;background:var(--line);margin-top:8px;max-width:340px}
+  .ms-split span{height:100%}
+
+  /* public profile */
+  .prof-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+  @media(max-width:620px){.prof-head{grid-template-columns:auto 1fr}.prof-head .ring{grid-column:1/-1}}
+  .recrow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px 4px;border-top:1px solid var(--line);text-decoration:none;color:var(--ink)}
+  .recrow:hover{background:var(--bg-2)}
+  .recnum{text-align:right;display:grid;gap:2px}
+  .recnum b{font-size:16px;font-variant-numeric:tabular-nums}
+  .recnum span{font-size:12px;color:var(--faint)}
   @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
   .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
   .card.tight{padding:14px}
@@ -318,7 +511,7 @@
 
   .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;margin-top:16px;align-items:start}
   .layout .side{position:sticky;top:76px;display:grid;gap:12px}
-  @media(max-width:900px){.layout{grid-template-columns:1fr}.layout .side{position:static;order:-1}}
+  @media(max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}.layout .side{position:static;order:-1}}
   .move{border:2px solid var(--brand);background:var(--paper)}
   .move h3{display:flex;align-items:center;gap:8px}
   .rolecard{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:start;padding:10px 0;border-top:1px solid var(--line);font-size:13px}
@@ -407,33 +600,47 @@
 
 <div class="sheet" id="walletSheet" hidden>
   <div class="sheet-card">
-    <div class="row"><h2>Connect</h2><button class="ghost small" id="sheetClose">Close</button></div>
-    <h3 style="margin-top:16px">Browser wallet</h3>
-    <p class="hint">MetaMask, Rabby or any injected wallet. Open this page inside the wallet's own browser if yours has none.</p>
-    <button id="connInjected">Connect browser wallet</button>
-    <h3 style="margin-top:22px">Private key (Studio accounts)</h3>
-    <p class="hint">Paste the private key of a GenLayer Studio account to act as it. It stays in this tab's memory and only signs your transactions. Testnet keys only.</p>
-    <input id="pkInput" type="password" placeholder="0x... (64 hex characters)" autocapitalize="off" autocomplete="off" spellcheck="false">
-    <button class="secondary" id="connKey">Use this account</button>
-    <h3 style="margin-top:22px">Test session</h3>
-    <p class="hint">A throwaway account for this tab, good for browsing and trying the flow.</p>
-    <button class="ghost" id="connTest">Start test session</button>
+    <div class="row"><div><div class="eyebrow">Wallet</div><h2 style="margin-top:4px">Connect to BidRoom</h2></div><button class="ghost small" id="sheetClose">Close</button></div>
+    <div class="opt"><div class="oi" style="background:var(--brand-soft)">&#129418;</div><div>
+      <h3>Browser wallet</h3><p class="hint">MetaMask, Rabby or any injected wallet. On a phone, open this page inside your wallet app's browser.</p>
+      <button id="connInjected">Connect browser wallet</button></div></div>
+    <div class="opt"><div class="oi" style="background:var(--indigo-soft)">&#128273;</div><div>
+      <h3>Studio account key</h3><p class="hint">Act as one of your GenLayer Studio accounts. The key stays in this tab's memory and only signs your own transactions. Testnet keys only.</p>
+      <input id="pkInput" type="password" placeholder="0x... (64 hex characters)" autocapitalize="off" autocomplete="off" spellcheck="false">
+      <button class="secondary" id="connKey">Use this account</button></div></div>
+    <div class="opt"><div class="oi" style="background:var(--green-soft)">&#9889;</div><div>
+      <h3>Test session</h3><p class="hint">A throwaway account for this tab. Good for browsing and trying the flow.</p>
+      <button class="ghost" id="connTest">Start test session</button></div></div>
     <div class="out" id="connOut"></div>
     <div id="connAddrBox" hidden>
       <h3 style="margin-top:22px">Connected address</h3>
       <p id="connAddr" class="mono" style="word-break:break-all;user-select:all;margin:8px 0"></p>
       <button class="secondary" id="connCopy">Copy address</button>
     </div>
-    <h3 style="margin-top:22px">Contract</h3>
-    <p class="hint">The BidRoom contract this page talks to.</p>
-    <input id="contractInput" placeholder="0x..." autocapitalize="off" autocomplete="off" spellcheck="false">
-    <button class="ghost" id="contractSave">Use this contract</button>
+    <div class="opt"><div class="oi" style="background:var(--amber-soft)">&#9881;</div><div>
+      <h3>Contract</h3><p class="hint">The BidRoom contract this page talks to.</p>
+      <input id="contractInput" placeholder="0x..." autocapitalize="off" autocomplete="off" spellcheck="false">
+      <button class="ghost" id="contractSave">Use this contract</button></div></div>
     <button class="ghost" id="connDisconnect" hidden>Disconnect</button>
   </div>
 </div>
 
+<div class="txdock" id="txDock" hidden role="status" aria-live="polite">
+  <div class="txhead"><b id="txTitle">Transaction</b><span class="txx" id="txClose" role="button" tabindex="0" aria-label="Hide">&times;</span></div>
+  <ol class="txsteps"><li data-s="sign">Confirm in your wallet</li><li data-s="sent">Sent to GenLayer</li><li data-s="cons" id="txConsLabel">Validators reach consensus</li><li data-s="done">Finalized</li></ol>
+  <div class="txbar"><i></i></div>
+  <div class="txmsg" id="txMsg"></div>
+  <div class="txmsg" id="txHash" style="display:none"><span class="mono" id="txHashText"></span> <a href="#" id="txCopy">copy</a></div>
+</div>
+
 <main class="wrap">
-  <div class="banner hide" id="noContract">No contract address is set. Open the wallet menu at the top and paste your deployed BidRoom address.</div>
+  <div class="setup hide" id="noContract">
+    <div class="ico">&#9881;</div>
+    <div><b>Connect this page to a BidRoom contract</b>
+      <div class="faint">Paste the address you got when you deployed the contract on GenLayer Studio. It is remembered in this browser.</div>
+      <div class="setup-row"><input id="setupInput" placeholder="0x... contract address" autocapitalize="off" autocomplete="off" spellcheck="false"><button id="setupSave" type="button">Connect contract</button></div>
+      <div class="out" id="setupOut"></div></div>
+  </div>
 
   <!-- ===== Explore ===== -->
   <section class="route" id="route-home">
@@ -442,31 +649,25 @@
       <div class="hero-grid">
         <div>
           <div class="live-pill"><span class="pulse"></span><span><b id="liveCount">-</b> projects open for bids right now</span></div>
-          <h1>Win work on <em>merit</em>.<br>Not on <span class="uline">who you know</span>.</h1>
-          <p class="lead">Clients lock the budget and write the rules. Freelancers bid. A blind AI panel scores every bid on those rules only, shows its work, and money moves milestone by milestone.</p>
+          <h1><em>Trust infrastructure</em><br>for <span class="uline">digital work</span>.</h1>
+          <p class="lead">Budgets sit in contract escrow. Winners are picked blind against criteria written before anyone bids. Every payment, dispute and ruling is recorded on-chain, and every reputation number is computed from that record.</p>
           <div class="cta">
             <a class="btn primary" href="#/new">Post a project <span aria-hidden="true">&rarr;</span></a>
             <button class="btn ghost" type="button" id="ctaBrowse">Browse open bids</button>
           </div>
           <div class="kpis">
             <div class="kpi"><b id="statTotal">-</b><span>projects posted</span><i id="statTotalSub">&nbsp;</i></div>
-            <div class="kpi"><b id="statActive">-</b><span>in progress</span><i>live on-chain</i></div>
-            <div class="kpi"><b id="statBids">-</b><span>bids placed</span><i>scored blind</i></div>
+            <div class="kpi"><b id="statActive">-</b><span>in progress</span><i id="statActiveSub">&nbsp;</i></div>
+            <div class="kpi"><b id="statBids">-</b><span>bids placed</span><i id="statBidsSub">&nbsp;</i></div>
             <div class="kpi"><b id="statPaid">-</b><span>GEN paid out</span><i>to winners</i></div>
           </div>
         </div>
-        <div class="stage" aria-hidden="true">
+        <div class="stage">
           <div class="board">
-            <div class="board-top"><span>Blind selection</span><span style="color:var(--green)">&#9679; live</span></div>
-            <div class="board-title">Landing page redesign &middot; 3 bids</div>
-            <div class="bc"><div class="tag" style="background:linear-gradient(135deg,#FF8A1F,#FF4F8B)">B0</div><div class="bars"><i style="width:92%"></i><i style="width:70%"></i><i style="width:84%"></i></div><b>13</b></div>
-            <div class="bc"><div class="tag" style="background:linear-gradient(135deg,#6D5BFF,#9A9BFF)">B1</div><div class="bars"><i style="width:60%"></i><i style="width:88%"></i><i style="width:52%"></i></div><b>11</b></div>
-            <div class="bc"><div class="tag" style="background:linear-gradient(135deg,#1FAE62,#3DDC84)">B2</div><div class="bars"><i style="width:40%"></i><i style="width:46%"></i><i style="width:72%"></i></div><b>8</b></div>
-            <div class="gavel"><svg viewBox="0 0 32 32"><path d="M9 21l8-8 3 3-8 8z" fill="#FF8A1F"/><path d="M15 9l4-3 7 7-3 4z" fill="#FFD23F"/><rect x="6" y="25" width="14" height="2.4" rx="1.2" fill="#FF8A1F"/></svg>
-              <div><b>Winner picked on C1, C2, C3</b><span class="muted">Scores and reasoning stored on-chain</span></div></div>
+            <div class="board-top"><span>Live contract activity</span><span style="color:var(--green)">&#9679; on-chain</span></div>
+            <div class="feed" id="heroFeed"><div class="faint" style="padding:18px 8px">Loading recent events...</div></div>
+            <div class="escrow-mini" id="heroEscrow"></div>
           </div>
-          <div class="floaty f1">&#128274; 100 GEN budget locked</div>
-          <div class="floaty f2">&#9878; Arbiter quotes the page</div>
         </div>
       </div>
     </div>
@@ -504,58 +705,76 @@
       <div class="btnrow"><button class="ghost" id="refreshBtn">Refresh</button><button class="ghost" id="moreBtn" hidden>Load more</button></div>
     </div>
 
-    <div class="steps4">
-      <div><em>01</em><b>Bidding</b>Budget locked. Bidders post a bond and a proposal.</div>
-      <div><em>02</em><b>Selection</b>Blind AI scores bids on the written criteria only.</div>
-      <div><em>03</em><b>Delivery</b>Each milestone paid when approved, or after silence.</div>
-      <div><em>04</em><b>Dispute</b>An AI arbiter checks the delivery and must quote it.</div>
-    </div>
   </section>
 
   <!-- ===== New project ===== -->
   <section class="route" id="route-new">
-    <h2>New project</h2>
-    <p class="muted">You become the client. The budget is locked now, and the written criteria below are the only thing the AI will use to pick the winner.</p>
-    <div class="card">
-      <h3>1. The work</h3>
-      <label for="fTitle">Title</label>
-      <input id="fTitle" maxlength="120" placeholder="Write the onboarding guide for new engineers">
-      <label for="fBrief">Brief</label>
-      <textarea id="fBrief" maxlength="1500" placeholder="What needs to be built, for whom, and any constraints. This is context for the evaluator; it is not scored."></textarea>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <h3>2. Selection criteria</h3>
-      <p class="hint" style="margin:4px 0 12px">Up to 6. Weight 1 (nice to have) to 5 (critical). Each bid is scored 0 to 3 on each criterion. Mention price or speed here only if you want them to count.</p>
-      <div class="builder" id="critList"></div>
-      <button class="ghost small" id="addCrit" type="button">+ Add criterion</button>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <h3>3. Milestones and payments</h3>
-      <p class="hint" style="margin:4px 0 12px">Up to 5. Shares must add up to 100%. The acceptance text is what the arbiter checks if you dispute a delivery, so write it so a stranger could verify it from a web page.</p>
-      <div class="builder ms" id="msList"></div>
-      <div class="bar" id="msBar"></div>
-      <div class="faint" id="msSum"></div>
-      <button class="ghost small" id="addMs" type="button" style="margin-top:8px">+ Add milestone</button>
-    </div>
-    <div class="card" style="margin-top:12px">
-      <h3>4. Money and timing</h3>
-      <div class="grid2">
-        <div><label for="fBudget">Budget (whole GEN)</label><input id="fBudget" inputmode="numeric" placeholder="100"></div>
-        <div><label for="fBond">Bid bond (% of budget)</label><input id="fBond" inputmode="numeric" value="10"></div>
+    <div class="eyebrow">New project</div>
+    <h1 class="page-title">Post a project in four steps</h1>
+    <p class="page-sub">You become the client. The budget is locked when you post, and the criteria you write are the only thing the AI may use to pick the winner.</p>
+    <div class="wiz">
+      <div>
+        <div class="wiz-steps" id="wizSteps">
+          <button type="button" class="wstep on" data-go="0"><small>Step 1</small><span>The work</span></button>
+          <button type="button" class="wstep" data-go="1"><small>Step 2</small><span>Criteria</span></button>
+          <button type="button" class="wstep" data-go="2"><small>Step 3</small><span>Milestones</span></button>
+          <button type="button" class="wstep" data-go="3"><small>Step 4</small><span>Money &amp; time</span></button>
+        </div>
+        <div class="card">
+          <div class="wiz-panel on" data-step="0">
+            <h3>What needs to be done?</h3>
+            <p class="hint">Start from a template or write your own.</p>
+            <div class="tpl" id="tplBox"></div>
+            <label for="fTitle">Title</label>
+            <input id="fTitle" maxlength="120" placeholder="Write the onboarding guide for new engineers">
+            <label for="fBrief">Brief</label>
+            <textarea id="fBrief" maxlength="1500" placeholder="What needs to be built, for whom, and any constraints. This is context for the evaluator; it is not scored."></textarea>
+          </div>
+          <div class="wiz-panel" data-step="1">
+            <h3>How will the winner be chosen?</h3>
+            <p class="hint" style="margin:4px 0 12px">Up to 6 criteria. Tap the bars to set the weight from 1 (nice to have) to 5 (critical). Each bid is scored 0 to 3 on each one. Mention price or speed here only if you want them to count.</p>
+            <div class="builder" id="critList"></div>
+            <button class="ghost small" id="addCrit" type="button">+ Add criterion</button>
+          </div>
+          <div class="wiz-panel" data-step="2">
+            <h3>How will the work be paid?</h3>
+            <p class="hint" style="margin:4px 0 12px">Up to 5 milestones, shares adding up to 100%. The acceptance text is what the arbiter checks if you dispute a delivery, so write it so a stranger could verify it from a web page.</p>
+            <div class="builder ms" id="msList"></div>
+            <div class="bar" id="msBar"></div>
+            <div class="faint" id="msSum"></div>
+            <button class="ghost small" id="addMs" type="button" style="margin-top:8px">+ Add milestone</button>
+          </div>
+          <div class="wiz-panel" data-step="3">
+            <h3>Money and timing</h3>
+            <div class="grid2">
+              <div><label for="fBudget">Budget (whole GEN)</label><input id="fBudget" inputmode="numeric" placeholder="100"></div>
+              <div><label for="fBond">Bid bond (% of budget)</label><input id="fBond" inputmode="numeric" value="10"></div>
+            </div>
+            <div class="calc" id="calc">Enter a budget to see the bond.</div>
+            <p class="hint">Every bidder locks the bond. Losers get it back at selection. The winner gets it back after the last milestone, and loses it if the work is never delivered. 1% to 30%.</p>
+            <div class="chips" style="margin-top:8px"><button class="chip active" id="presetStd" type="button">Standard timing</button><button class="chip" id="presetTest" type="button">Quick test (minutes)</button></div>
+            <div class="grid2">
+              <div><label>Bidding stays open</label><div class="inline"><input id="tBid" inputmode="numeric"><select id="uBid"></select></div></div>
+              <div><label>Winner must confirm within</label><div class="inline"><input id="tAcc" inputmode="numeric"><select id="uAcc"></select></div></div>
+              <div><label>Client review window</label><div class="inline"><input id="tRev" inputmode="numeric"><select id="uRev"></select></div></div>
+              <div><label>Grace after a missed deadline</label><div class="inline"><input id="tGra" inputmode="numeric"><select id="uGra"></select></div></div>
+            </div>
+            <label>Longest delivery time a bid may promise</label>
+            <div class="inline"><input id="tMax" inputmode="numeric"><select id="uMax"></select></div>
+          </div>
+          <div class="wiz-nav">
+            <button class="ghost" type="button" id="wizBack">Back</button>
+            <button type="button" id="wizNext">Continue</button>
+            <button id="createBtn" class="hide">Post project and lock budget</button>
+          </div>
+          <div class="out" id="createOut"></div>
+        </div>
       </div>
-      <div class="calc" id="calc">Enter a budget to see the bond.</div>
-      <p class="hint">Every bidder locks the bond. Losers get it back at selection. The winner gets it back after the last milestone, and loses it if the work is never delivered. 1% to 30%.</p>
-      <div class="chips" style="margin-top:8px"><button class="chip active" id="presetStd" type="button">Standard timing</button><button class="chip" id="presetTest" type="button">Quick test (minutes)</button></div>
-      <div class="grid2">
-        <div><label>Bidding stays open</label><div class="inline"><input id="tBid" inputmode="numeric"><select id="uBid"></select></div></div>
-        <div><label>Winner must confirm within</label><div class="inline"><input id="tAcc" inputmode="numeric"><select id="uAcc"></select></div></div>
-        <div><label>Client review window</label><div class="inline"><input id="tRev" inputmode="numeric"><select id="uRev"></select></div></div>
-        <div><label>Grace after a missed deadline</label><div class="inline"><input id="tGra" inputmode="numeric"><select id="uGra"></select></div></div>
-      </div>
-      <label>Longest delivery time a bid may promise</label>
-      <div class="inline"><input id="tMax" inputmode="numeric"><select id="uMax"></select></div>
-      <button id="createBtn">Create project and lock budget</button>
-      <div class="out" id="createOut"></div>
+      <aside class="preview">
+        <div class="eyebrow">Live preview</div>
+        <div id="previewCard"></div>
+        <div class="card tight"><h4 style="margin-bottom:10px">Summary</h4><div class="sumlist" id="sumList"></div></div>
+      </aside>
     </div>
   </section>
 
@@ -567,23 +786,26 @@
 
   <!-- ===== My account ===== -->
   <section class="route" id="route-me">
-    <h2>My account</h2>
-    <p class="muted">Payouts and refunds are credited here first. Withdraw sends your whole balance to your own wallet.</p>
-    <div class="layout" style="margin-top:12px">
+    <div class="eyebrow">My account</div>
+    <h1 class="page-title">Your BidRoom</h1>
+    <p class="page-sub">Payouts and refunds are credited here first. Withdraw sends your whole balance to your own wallet.</p>
+    <div class="card me-hero" style="margin-top:18px">
+      <div class="me-id"><span class="av big" id="meAv"></span><div style="min-width:0"><small>Connected as</small>
+        <div class="mono" id="myAddr" style="word-break:break-all;margin-top:4px"></div><div class="tags" id="meRoles"></div><a id="meProfileLink" href="#/me" style="display:inline-block;margin-top:8px;font-weight:800;text-decoration:none;font-size:14px">View public profile &rarr;</a></div></div>
+      <div class="me-bal"><small>Withdrawable balance</small><b id="myPending">-</b>
+        <div class="btnrow"><button id="withdrawBtn">Withdraw</button><button class="ghost" id="checkPendingBtn">Refresh</button></div>
+        <div class="out" id="wOut"></div></div>
+    </div>
+    <div class="layout">
       <div class="stack">
-        <div class="card">
-          <div class="row"><span class="muted">Withdrawable balance</span><b id="myPending" style="font-size:22px">-</b></div>
-          <p class="faint mono" id="myAddr" style="word-break:break-all;margin-top:6px"></p>
-          <button id="withdrawBtn">Withdraw my balance</button>
-          <button class="ghost" id="checkPendingBtn">Refresh</button>
-          <div class="out" id="wOut"></div>
-        </div>
         <div class="card" id="profileCard"></div>
+        <div class="card"><div class="row"><h3>My projects</h3><a href="#/new" style="font-weight:800;text-decoration:none;font-size:14px">+ New</a></div>
+          <div class="pgrid list" id="myProjects" style="margin-top:12px"></div></div>
       </div>
       <div class="side">
         <div class="card"><h3>Look up an address</h3>
           <input id="pAddr" placeholder="0x..." autocapitalize="off" autocomplete="off" spellcheck="false" style="margin-top:10px">
-          <button class="secondary" id="pBtn">Show profile</button>
+          <button class="secondary" id="pBtn">Open public profile</button>
           <div class="out" id="pOut"></div>
           <div id="pBox" style="margin-top:12px"></div></div>
         <div class="card"><h3>Contract books</h3><div id="booksBox" class="muted" style="margin-top:8px">-</div></div>
@@ -591,45 +813,62 @@
     </div>
   </section>
 
+  <!-- ===== Public profile ===== -->
+  <section class="route" id="route-user">
+    <a class="back" href="#/">&larr; Explore</a>
+    <div id="userView"></div>
+  </section>
+
   <!-- ===== How it works ===== -->
   <section class="route" id="route-how">
-    <h2>How BidRoom works</h2>
-    <div class="grid" style="margin-top:12px">
-      <div class="card"><h3>Three roles in one contract</h3>
-        <div class="tablewrap"><table>
-          <tr><th>Role</th><th>Who</th><th>What they do</th></tr>
-          <tr><td><b>Client</b></td><td>Creates the project</td><td>Locks the budget, writes criteria and milestones, reviews each delivery.</td></tr>
-          <tr><td><b>Bidder</b></td><td>Any other wallet</td><td>Locks a bond, posts a price, a time and a proposal. Can withdraw until bidding closes.</td></tr>
-          <tr><td><b>Winner</b></td><td>The selected bidder</td><td>Confirms the award, delivers one link per milestone, gets paid as work is approved.</td></tr>
-          <tr><td><b>Anyone</b></td><td>Any wallet</td><td>Triggers the steps nobody can block: selection, rulings, auto-approval, refunds.</td></tr>
-        </table></div></div>
-      <div class="card"><h3>The four phases</h3>
-        <p class="muted" style="margin-top:8px"><b>Bidding</b> runs for the window the client chose. <b>Selection</b> starts when it closes: anyone can trigger the blind AI evaluation. Bidders are labelled B0, B1 and so on, the evaluator never sees an address, and it may use only the written criteria. Every score and the reasoning are stored on-chain. If the best weighted score is below 34% of the maximum, nobody is awarded and everybody is refunded.</p>
-        <p class="muted"><b>Delivery</b> pays milestone by milestone. The client approves, or is silent: silence for the whole review window counts as approval. <b>Dispute</b> lets the client contest a delivery inside the review window; an AI arbiter fetches the delivered page and judges it against the acceptance text written before bidding, and must quote the page to be valid.</p></div>
-      <div class="card"><h3>Where the money goes</h3>
-        <div class="tablewrap"><table>
-          <tr><th>Situation</th><th>Winner gets</th><th>Client gets</th></tr>
-          <tr><td>Milestone approved or auto-approved</td><td>Its full amount</td><td>-</td></tr>
-          <tr><td>Dispute: ACCEPTED</td><td>Full amount</td><td>-</td></tr>
-          <tr><td>Dispute: PARTIAL</td><td>Half of the amount</td><td>The other half</td></tr>
-          <tr><td>Dispute: REJECTED (first time)</td><td>One redo of the milestone</td><td>-</td></tr>
-          <tr><td>Rejected twice, or a milestone never delivered</td><td>Nothing more, bond lost</td><td>All unpaid milestones plus the bond</td></tr>
-          <tr><td>Winner never confirms the award</td><td>Bond lost</td><td>Whole price plus the bond</td></tr>
-          <tr><td>Winner declines the award</td><td>Half the bond back</td><td>Whole price plus half the bond</td></tr>
-          <tr><td>All milestones settled</td><td>Bond returned</td><td>Budget minus the winning price, back at selection</td></tr>
-        </table></div></div>
-      <div class="card"><h3>What to know</h3>
-        <ul class="muted" style="margin:6px 0 0;padding-left:18px">
-          <li>Use links that cannot change after delivery (for example a GitHub file at a commit). The arbiter reads the page when it rules.</li>
-          <li>The arbiter and the selector are language models. The contract limits them: they choose among fixed outcomes, must quote evidence, and every validator re-derives the decision independently.</li>
-          <li>If a ruling or a selection cannot be reached, nothing is recorded and anyone can try again. Unresolved disputes split the milestone 50/50 after 72 hours.</li>
-          <li>Payouts are credited first and withdrawn by their owner, so no one else can block your money.</li>
-        </ul></div>
+    <div class="eyebrow">How it works</div>
+    <h1 class="page-title">Rules first. Then bids. Then money.</h1>
+    <p class="page-sub">BidRoom is one GenLayer Intelligent Contract. The client writes the rules before anyone bids, and every later step is checked against them.</p>
+    <div class="phase-rail">
+      <div class="ph b"><span class="icon">&#128176;</span><div class="num">PHASE 01</div><h3>Bidding</h3><p>The client locks the budget and writes weighted criteria and milestones. Freelancers lock a small bond and bid a price, a time and a proposal. Bids can be withdrawn until the window closes.</p></div>
+      <div class="ph s"><span class="icon">&#9878;</span><div class="num">PHASE 02</div><h3>Selection</h3><p>Anyone triggers it. Every validator scores each bid 0 to 3 on each criterion without seeing who bid. Code adds up the weights, breaks ties by price, and requires at least 34% of the maximum.</p></div>
+      <div class="ph d"><span class="icon">&#128230;</span><div class="num">PHASE 03</div><h3>Delivery</h3><p>Milestone by milestone. The winner submits a link; the client approves, or stays silent for the review window, which counts as approval. A missed deadline lets anyone refund the client.</p></div>
+      <div class="ph x"><span class="icon">&#128269;</span><div class="num">PHASE 04</div><h3>Dispute</h3><p>The client may contest a delivery in time. An AI arbiter reads the delivered page against the acceptance text and must quote it: accepted, partial (50/50), or rejected with one redo.</p></div>
+    </div>
+
+    <h2 style="margin-top:40px">Who does what</h2>
+    <div class="roles">
+      <div class="role"><span class="rb" style="background:var(--brand-soft);color:var(--brand-deep)">Client</span><p>Creates the project, locks the budget, writes criteria and milestones, reviews each delivery.</p></div>
+      <div class="role"><span class="rb" style="background:var(--indigo-soft);color:var(--indigo)">Bidder</span><p>Any other wallet. Locks a bond and posts a price, a time and a proposal.</p></div>
+      <div class="role"><span class="rb" style="background:var(--green-soft);color:var(--green)">Winner</span><p>The selected bidder. Confirms the award, delivers one link per milestone, gets paid as work is approved.</p></div>
+      <div class="role"><span class="rb" style="background:var(--line);color:var(--dim)">Anyone</span><p>Triggers the steps nobody can block: selection, rulings, auto-approval, refunds.</p></div>
+    </div>
+
+    <h2 style="margin-top:40px">Where the money goes</h2>
+    <div class="card" style="margin-top:12px"><div class="tablewrap"><table class="money-table">
+      <tr><th>Situation</th><th>Winner gets</th><th>Client gets</th></tr>
+      <tr><td>Milestone approved or auto-approved</td><td>Its full amount</td><td>-</td></tr>
+      <tr><td>Dispute: ACCEPTED</td><td>Full amount</td><td>-</td></tr>
+      <tr><td>Dispute: PARTIAL</td><td>Half of the amount</td><td>The other half</td></tr>
+      <tr><td>Dispute: REJECTED (first time)</td><td>One redo of the milestone</td><td>-</td></tr>
+      <tr><td>Rejected twice, or a milestone never delivered</td><td>Nothing more, bond lost</td><td>All unpaid milestones plus the bond</td></tr>
+      <tr><td>Winner never confirms the award</td><td>Bond lost</td><td>Whole price plus the bond</td></tr>
+      <tr><td>Winner declines the award</td><td>Half the bond back</td><td>Whole price plus half the bond</td></tr>
+      <tr><td>All milestones settled</td><td>Bond returned</td><td>Budget minus the winning price, back at selection</td></tr>
+    </table></div></div>
+
+    <h2 style="margin-top:40px">Questions</h2>
+    <div class="faq">
+      <details><summary>Can the AI be talked into picking someone?</summary><p>Proposals are passed as untrusted data, bidders are hidden behind labels, and a proposal that addresses the evaluator is scored 0. Every validator scores independently and must reach the same winner, so one model run cannot decide alone.</p></details>
+      <details><summary>What if the AI cannot decide?</summary><p>Nothing is recorded and anyone can try again. If selection is never completed, everyone is refunded 24 hours after bidding closes. An unresolved dispute splits the milestone 50/50 after 72 hours.</p></details>
+      <details><summary>Which delivery links should I use?</summary><p>Links that cannot change after delivery, for example a GitHub file at a specific commit. The arbiter reads the page when it rules.</p></details>
+      <details><summary>Who holds the money?</summary><p>The contract. Every payout is credited to a balance that only its owner can withdraw, so nobody can block anyone else's money.</p></details>
     </div>
   </section>
 </main>
 
-<footer>BidRoom on GenLayer Studio &middot; contract <span class="mono" id="contractAddrText"></span><br>No-build frontend (genlayer-js). Design notes and limits are in ARCHITECTURE.md.</footer>
+<footer class="foot"><div class="wrap foot-grid">
+  <div><a class="brand" href="#/" style="display:flex"><span>Bid<b>Room</b></span></a><p>Freelance work won on written criteria. Blind AI selection, milestone payments, disputes and refunds, all in one GenLayer Intelligent Contract.</p></div>
+  <div><h4>Product</h4><a href="#/">Explore projects</a><a href="#/new">Post a project</a><a href="#/me">My account</a><a href="#/how">How it works</a></div>
+  <div><h4>Contract</h4><p class="mono" id="contractAddrText" style="margin:0;word-break:break-all"></p>
+    <a href="#" id="copyContract">Copy contract address</a><a href="https://explorer-studio.genlayer.com" target="_blank" rel="noopener noreferrer">GenLayer Studio explorer &nearr;</a>
+    <p>Studio network (chain 61999). No-build frontend using genlayer-js.</p></div>
+</div></footer>
 
 <nav class="tabs"><div class="wrap">
   <a class="tab" data-tab="home" href="#/"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Explore</a>
@@ -660,7 +899,7 @@ function resolveContract() {
 }
 let CONTRACT_ADDRESS = resolveContract();
 function showContract() {
-  $("contractAddrText").textContent = CONTRACT_ADDRESS === ZERO ? "not set" : CONTRACT_ADDRESS.slice(0, 8) + "..." + CONTRACT_ADDRESS.slice(-6);
+  $("contractAddrText").textContent = CONTRACT_ADDRESS === ZERO ? "not set" : CONTRACT_ADDRESS;
   $("noContract").classList.toggle("hide", CONTRACT_ADDRESS !== ZERO);
 }
 showContract();
@@ -791,6 +1030,13 @@ $("contractSave").addEventListener("click", () => {
   CONTRACT_ADDRESS = v; try { localStorage.setItem("bidroom.contract", v); } catch (e) {}
   showContract(); closeSheet(); route();
 });
+$("setupSave").addEventListener("click", () => {
+  const v = $("setupInput").value.trim();
+  if (!okAddr(v)) return showOut($("setupOut"), "Enter a 0x address (42 characters).", "err");
+  CONTRACT_ADDRESS = v; try { localStorage.setItem("bidroom.contract", v); } catch (e) {}
+  showContract(); route();
+});
+$("copyContract").addEventListener("click", async (e) => { e.preventDefault(); try { await navigator.clipboard.writeText(CONTRACT_ADDRESS); e.target.textContent = "Copied"; } catch (err) { e.target.textContent = "Select the address above"; } });
 $("connCopy").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText(String(account || "")); $("connCopy").textContent = "Copied"; } catch (e) { $("connCopy").textContent = "Select the address above and copy it"; }
   setTimeout(() => { $("connCopy").textContent = "Copy address"; }, 2000);
@@ -817,12 +1063,52 @@ async function readJson(functionName, args = []) {
   const raw = await read(functionName, args);
   return typeof raw === "string" ? JSON.parse(raw) : raw;
 }
+const TX_ORDER = ["sign", "sent", "cons", "done"];
+let txTimer = null, txStart = 0, txBase = "", txRunning = false, txHide = null;
+function txSet(stage, state) {
+  const i = TX_ORDER.indexOf(stage);
+  document.querySelectorAll("#txDock li").forEach((li, k) => { li.className = k < i ? "done" : k === i ? (state || "now") : ""; });
+}
+function txPaint() { $("txMsg").textContent = txBase + (txRunning ? (txBase ? " \u00B7 " : "") + fmtDur(Date.now() - txStart + 1000) : ""); }
+function txMsg(t) { txBase = t; txPaint(); }
+function txOpen(label, slow) {
+  const d = $("txDock"); clearTimeout(txHide); clearInterval(txTimer);
+  d.hidden = false; d.classList.remove("ok", "err");
+  $("txTitle").textContent = label.charAt(0).toUpperCase() + label.slice(1);
+  $("txConsLabel").textContent = slow ? "Validators run the AI step" : "Validators reach consensus";
+  txStart = Date.now(); txRunning = true; txSet("sign"); txMsg("Waiting for your wallet"); $("txHash").style.display = "none"; $("txCopy").textContent = "copy";
+  txTimer = setInterval(txPaint, 1000);
+}
+let txPollTimer = null;
+function txShowHash(hash) { $("txHash").style.display = "block"; $("txHashText").textContent = short(hash); $("txHashText").setAttribute("data-full", hash); }
+function txPoll(hash, slow) {
+  clearInterval(txPollTimer);
+  if (typeof client?.getTransaction !== "function") return;
+  txPollTimer = setInterval(async () => {
+    try {
+      const t = await client.getTransaction({ hash });
+      const name = t?.statusName || t?.status_name;
+      if (name && txRunning) $("txConsLabel").textContent = (slow ? "AI consensus: " : "Consensus: ") + String(name).replace(/_/g, " ").toLowerCase();
+    } catch (e) { /* the receipt wait remains the source of truth */ }
+  }, 3000);
+}
+$("txCopy").addEventListener("click", async (e) => { e.preventDefault(); try { await navigator.clipboard.writeText($("txHashText").getAttribute("data-full") || ""); $("txCopy").textContent = "copied"; } catch (err) { $("txCopy").textContent = "select it"; } });
+function txEnd(ok, text) {
+  clearInterval(txPollTimer);
+  txRunning = false; clearInterval(txTimer);
+  const d = $("txDock"); d.classList.add(ok ? "ok" : "err");
+  if (ok) txSet("done", "done"); else { const cur = document.querySelector("#txDock li.now"); if (cur) cur.className = "fail"; }
+  txMsg(text);
+  if (ok) txHide = setTimeout(() => { d.hidden = true; }, 7000);
+}
+$("txClose").addEventListener("click", () => { $("txDock").hidden = true; });
 let busy = 0;
 async function write(out, label, functionName, args, valueWei, slow) {
   if (!needClient(out)) return null;
   if (CONTRACT_ADDRESS === ZERO) { showOut(out, "Set the contract address first (wallet menu).", "err"); return null; }
   if (busy) { showOut(out, "Another transaction from this page is still running. Wait for it to finish.", "err"); return null; }
   busy++;
+  txOpen(label, slow);
   const buttons = Array.from(document.querySelectorAll("button"));
   buttons.forEach((b) => { if (!b.closest("#walletSheet")) b.disabled = true; });
   try {
@@ -830,8 +1116,9 @@ async function write(out, label, functionName, args, valueWei, slow) {
     await ensureChain();
     const nudge = setTimeout(() => showOut(out, `Still waiting for the wallet to answer ${label}.\nOpen your wallet app and look for a pending request. If none appears, the wallet is probably on the wrong network.`), 20000);
     let hash;
-    try { hash = await client.writeContract({ address: CONTRACT_ADDRESS, functionName, args, value: valueWei ?? 0n }); }
+    try { hash = await client.writeContract({ address: CONTRACT_ADDRESS, functionName, args, value: valueWei ?? 0n }); txSet("sent"); txShowHash(hash); txPoll(hash, slow); }
     finally { clearTimeout(nudge); }
+    txSet("cons"); txMsg(slow ? "Each validator runs the AI on its own. This can take a few minutes" : "Tx " + short(hash));
     showOut(out, slow ? `Sent ${short(hash)}. The validators are now running the AI step; this can take a few minutes...` : `Sent ${short(hash)}. Waiting for finalization...`);
     const receipt = await client.waitForTransactionReceipt({ hash, status: "FINALIZED", interval: 4000, retries: slow ? 120 : 45 });
     const leader = receipt?.consensus_data?.leader_receipt?.[0];
@@ -839,15 +1126,18 @@ async function write(out, label, functionName, args, valueWei, slow) {
     if (leader?.execution_result === "ERROR") {
       const why = typeof result === "string" && result.length < 300 ? "\n\n" + result : "";
       showOut(out, "The contract rejected this call. Check the details and try again." + why + "\n\nTx: " + hash, "err");
+      txEnd(false, "Rejected by the contract. Details below the button.");
       return null;
     }
     if (result && typeof result === "object" && result.rejected) {
       showOut(out, "Rejected: " + result.rejected + "\n\nThe GEN you sent (" + gen(result.refunded_wei) + ") was credited to your account balance; withdraw it there.\n\nTx: " + hash, "err");
+      txEnd(false, "Rejected: " + result.rejected);
       return null;
     }
     showOut(out, "Done.\n\nTx: " + hash, "ok");
+    txEnd(true, "Done \u00B7 " + short(hash));
     return result === null ? true : result;
-  } catch (e) { showOut(out, "Error: " + (e?.message || String(e)), "err"); return null; }
+  } catch (e) { showOut(out, "Error: " + (e?.message || String(e)), "err"); txEnd(false, (e?.message || String(e)).slice(0, 160)); return null; }
   finally { busy--; buttons.forEach((b) => { b.disabled = false; }); }
 }
 
@@ -926,6 +1216,61 @@ function avatar(addr) {
   return h("span", { class: "av", title: addr || "", style: `background:linear-gradient(${Math.floor(r() * 360)}deg,${c1},${c2})` });
 }
 
+/* ---------- event vocabulary (maps the contract's history event names) ---------- */
+const ICONS = {
+  money: "M12 3v18M17 7H9.5a3 3 0 000 6h5a3 3 0 010 6H6",
+  ai: "M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9 5.5-.8z",
+  risk: "M12 3l10 18H2zM12 10v4M12 17h.01",
+  info: "M12 5v14M5 12h14",
+};
+const EVT = {
+  project_created: ["info", "Project posted"], bid_placed: ["info", "Bid placed"], bid_withdrawn: ["info", "Bid withdrawn"],
+  winner_selected: ["ai", "AI selected a winner"], no_qualifying_bid: ["ai", "No bid qualified, all refunded"],
+  award_confirmed: ["info", "Winner confirmed the award"], award_declined: ["risk", "Winner declined the award"], award_voided: ["risk", "Award voided, bond forfeited"],
+  milestone_submitted: ["info", "Milestone delivered"], milestone_approved: ["money", "Milestone paid"], milestone_auto_approved: ["money", "Milestone paid after silent review"],
+  milestone_disputed: ["risk", "Delivery disputed"], dispute_accepted: ["ai", "Arbiter ruled: accepted"], dispute_partial: ["ai", "Arbiter ruled: partial"],
+  dispute_rejected: ["ai", "Arbiter ruled: rejected, redo"], dispute_timeout_split: ["money", "No ruling in 72h, split 50/50"],
+  project_completed: ["money", "Project completed, bond returned"], project_failed: ["risk", "Project failed, client refunded"],
+  project_cancelled: ["info", "Project cancelled, budget returned"], expired_no_bids: ["info", "Closed without bids"], expired_unselected: ["risk", "Selection timed out, all refunded"],
+};
+function evIcon(kind) { return h("span", { class: "ei k-" + kind }, s_("svg", { viewBox: "0 0 24 24" }, s_("path", { d: ICONS[kind] || ICONS.info }))); }
+function timeAgo(iso) {
+  const d = Date.now() - new Date(iso).getTime();
+  if (!isFinite(d)) return "";
+  if (d < 60000) return "just now";
+  if (d < 3600000) return Math.floor(d / 60000) + "m ago";
+  if (d < 86400000) return Math.floor(d / 3600000) + "h ago";
+  return Math.floor(d / 86400000) + "d ago";
+}
+const addrLink = (a, label) => (a ? h("a", { class: "addr", href: "#/u/" + a, text: label || short(a) + (account && same(a, account) ? " (you)" : "") }) : h("span", { text: "-" }));
+function humanDetail(d) {
+  return String(d || "").replace(/\b(\d{15,})( wei)?\b/g, (m, n) => weiToGen(n) + " GEN");
+}
+function eventRow(e, withProject) {
+  const [kind, label] = EVT[e.event] || ["info", e.event.replace(/_/g, " ")];
+  return h("a", { class: "ev", href: "#/project/" + encodeURIComponent(e.project_id || "") },
+    evIcon(kind),
+    h("div", { style: "min-width:0" }, h("b", { text: label }), h("span", { text: (withProject ? e.title + " · " : "") + (e.detail ? humanDetail(e.detail) + " · " : "") + short(e.by) })),
+    h("time", { datetime: e.t, title: fmtTime(e.t), text: timeAgo(e.t) }));
+}
+async function loadHeroLive() {
+  const feed = $("heroFeed"), esc = $("heroEscrow");
+  if (CONTRACT_ADDRESS === ZERO) { clear(feed).appendChild(h("div", { class: "faint", style: "padding:18px 8px", text: "Connect a contract to see its live activity." })); clear(esc); return; }
+  try {
+    const events = await readJson("get_activity", [6]);
+    clear(feed);
+    if (!events.length) feed.appendChild(h("div", { class: "faint", style: "padding:18px 8px", text: "No activity yet. Every action on this contract will appear here." }));
+    for (const e of events) feed.appendChild(eventRow(e, true));
+  } catch (err) { clear(feed).appendChild(h("div", { class: "faint", style: "padding:18px 8px", text: "Activity is not available from this contract." })); }
+  try {
+    const a = await readJson("get_accounting");
+    clear(esc).append(
+      h("div", {}, h("b", { text: weiToGen(a.locked_in_projects) }), "GEN in escrow"),
+      h("div", {}, h("b", { text: weiToGen(a.pending_withdrawals) }), "GEN claimable"),
+      h("div", {}, h("b", { class: "ok-seal", style: a.balanced ? "" : "color:var(--red)", text: a.balanced ? "✓ Balanced" : "✗ Mismatch" }), "balance = escrow + claims"));
+  } catch (err) { clear(esc); }
+}
+
 /* ---------- Explore ---------- */
 let listRows = [], listTotal = 0, chipFilter = "all", sortBy = "new", viewMode = "grid";
 try { if (localStorage.getItem("bidroom.view") === "list") viewMode = "list"; } catch (e) {}
@@ -943,6 +1288,8 @@ async function loadStats() {
     const paid = Number(BigInt(s.paid_to_winners_wei) / 10n ** 15n) / 1000;
     countUp($("statPaid"), paid, (v, done) => (done ? weiToGen(s.paid_to_winners_wei) : (Math.round(v * 10) / 10).toString()));
     $("statTotalSub").textContent = (s.by_status?.completed || 0) + " completed";
+    $("statActiveSub").textContent = (s.by_status?.dispute || 0) + " in dispute";
+    $("statBidsSub").textContent = s.dispute_rulings + " AI rulings";
   } catch (e) { /* decorative */ }
 }
 function renderChips() {
@@ -1028,6 +1375,7 @@ function renderList() {
 async function loadList(append) {
   const box = $("projectList");
   if (!append) { listRows = []; clear(box); for (let i = 0; i < 3; i++) box.appendChild(h("div", { class: "skel" })); }
+  if (!append) loadHeroLive();
   if (CONTRACT_ADDRESS === ZERO) { renderList(); renderTicker(); return; }
   loadStats();
   try {
@@ -1066,10 +1414,11 @@ let mss = [{ title: "", acceptance: "", pct: 50 }, { title: "", acceptance: "", 
 function renderCrits() {
   const box = clear($("critList"));
   crits.forEach((c, i) => {
-    box.appendChild(h("div", { class: "line" },
+    box.appendChild(h("div", { class: "line crit" },
       h("input", { value: c.text, maxlength: "200", placeholder: `Criterion ${i + 1}, for example: shows relevant past work`, oninput: (e) => { crits[i].text = e.target.value; } }),
-      h("select", { onchange: (e) => { crits[i].weight = parseInt(e.target.value, 10); } }, [1, 2, 3, 4, 5].map((w) => h("option", { value: String(w), selected: w === c.weight, text: "weight " + w }))),
-      h("button", { class: "x", type: "button", text: "x", onclick: () => { if (crits.length > 1) { crits.splice(i, 1); renderCrits(); } } })));
+      h("div", { class: "wd", role: "group", "aria-label": "weight" }, [1, 2, 3, 4, 5].map((w) => h("button", { type: "button", class: w <= c.weight ? "on" : "", title: "weight " + w, "aria-label": "weight " + w,
+        onclick: () => { crits[i].weight = w; renderCrits(); updatePreview(); } }))),
+      h("button", { class: "x", type: "button", text: "x", onclick: () => { if (crits.length > 1) { crits.splice(i, 1); renderCrits(); updatePreview(); } } })));
   });
   $("addCrit").hidden = crits.length >= 6;
 }
@@ -1080,7 +1429,7 @@ function renderMs() {
       h("div", { class: "line", style: "margin-bottom:6px" },
         h("input", { value: m.title, maxlength: "100", placeholder: `Milestone ${i + 1} title`, oninput: (e) => { mss[i].title = e.target.value; } }),
         h("input", { value: String(m.pct), inputmode: "numeric", "aria-label": "share in percent", oninput: (e) => { mss[i].pct = parseInt(e.target.value, 10) || 0; updateBar(); } }),
-        h("button", { class: "x", type: "button", text: "x", onclick: () => { if (mss.length > 1) { mss.splice(i, 1); renderMs(); } } })),
+        h("button", { class: "x", type: "button", text: "x", onclick: () => { if (mss.length > 1) { mss.splice(i, 1); renderMs(); updatePreview(); } } })),
       h("textarea", { maxlength: "500", style: "min-height:64px", placeholder: "Acceptance: what exactly must the delivered page show?", oninput: (e) => { mss[i].acceptance = e.target.value; } }, m.acceptance)));
   });
   $("addMs").hidden = mss.length >= 5;
@@ -1123,7 +1472,86 @@ $("createBtn").addEventListener("click", async () => {
   if (typeof id === "string" && /^project_\d+$/.test(id)) setTimeout(() => { location.hash = "#/project/" + id; }, 1200);
   else if (id) setTimeout(() => { location.hash = "#/"; }, 1200);
 });
-renderCrits(); renderMs();
+const TEMPLATES = [
+  { name: "Website", title: "Landing page for a specialty coffee roaster",
+    brief: "A one-page site for a small coffee roaster: story, three featured coffees, subscription sign-up and contact. Their brand colours and photos are provided.",
+    crits: [["Shows websites they designed and built", 4], ["Explains the design and build plan step by step", 3], ["Covers mobile layout and accessibility", 2]],
+    ms: [["Design mockups", "The page shows desktop and mobile mockups of every section of the landing page", 40], ["Live landing page", "The page is the finished landing page on a public https address with every section from the mockups", 60]] },
+  { name: "Audit", title: "Security review of a lending pool contract",
+    brief: "Review a 600-line lending pool contract (deposits, borrows, liquidations) and report issues with severity and fixes. The repository is public.",
+    crits: [["Has published audit reports or security findings", 5], ["Describes a concrete review method", 3], ["Covers liquidation and oracle risks", 3]],
+    ms: [["Findings draft", "The page lists every finding with severity, location in the code and a suggested fix", 50], ["Final report", "The page is the final report with an executive summary and the status of every finding after fixes", 50]] },
+  { name: "Writing", title: "Onboarding guide for new engineers",
+    brief: "A clear guide that takes a new engineer from laptop setup to first deploy on our platform. About 3,000 words with screenshots.",
+    crits: [["Shows similar technical guides they wrote", 3], ["Gives a clear outline and plan", 2], ["Writes plainly for newcomers", 2]],
+    ms: [["Outline and first half", "The page has the full outline and complete setup and first-day sections", 50], ["Complete guide", "The page is the complete guide including deploy and troubleshooting sections", 50]] },
+];
+function applyTemplate(t) {
+  $("fTitle").value = t.title; $("fBrief").value = t.brief;
+  crits = t.crits.map(([text, weight]) => ({ text, weight }));
+  mss = t.ms.map(([title, acceptance, pct]) => ({ title, acceptance, pct }));
+  renderCrits(); renderMs(); updatePreview();
+}
+for (const t of TEMPLATES) $("tplBox").appendChild(h("button", { class: "chip", type: "button", text: t.name, onclick: () => applyTemplate(t) }));
+
+let wizStep = 0;
+function wizCheck(step) {
+  if (step === 0) {
+    if ($("fTitle").value.trim().length < 3) return "Give the project a title (at least 3 characters).";
+    if ($("fBrief").value.trim().length < 10) return "Write a brief of at least 10 characters.";
+  }
+  if (step === 1 && crits.some((c) => c.text.trim().length < 3)) return "Every criterion needs at least 3 characters (remove empty rows).";
+  if (step === 2) {
+    if (mss.some((m) => m.title.trim().length < 3 || m.acceptance.trim().length < 10)) return "Every milestone needs a title and an acceptance text of at least 10 characters.";
+    if (mss.some((m) => m.pct < 5)) return "Each milestone must be at least 5%.";
+    if (mss.reduce((a, m) => a + m.pct, 0) !== 100) return "Milestone shares must add up to exactly 100%.";
+  }
+  return "";
+}
+function showWiz(n) {
+  wizStep = n;
+  document.querySelectorAll(".wiz-panel").forEach((el) => el.classList.toggle("on", Number(el.getAttribute("data-step")) === n));
+  document.querySelectorAll(".wstep").forEach((el) => { const k = Number(el.getAttribute("data-go")); el.classList.toggle("on", k === n); el.classList.toggle("ok", k < n && !wizCheck(k)); });
+  $("wizBack").style.visibility = n === 0 ? "hidden" : "visible";
+  $("wizNext").classList.toggle("hide", n === 3);
+  $("createBtn").classList.toggle("hide", n !== 3);
+  $("createOut").style.display = "none";
+  updatePreview();
+}
+$("wizNext").addEventListener("click", () => { const e = wizCheck(wizStep); if (e) return showOut($("createOut"), e, "err"); showWiz(Math.min(3, wizStep + 1)); });
+$("wizBack").addEventListener("click", () => showWiz(Math.max(0, wizStep - 1)));
+document.querySelectorAll(".wstep").forEach((el) => el.addEventListener("click", () => {
+  const target = Number(el.getAttribute("data-go"));
+  for (let k = 0; k < target; k++) { const e = wizCheck(k); if (e) { showWiz(k); return showOut($("createOut"), e, "err"); } }
+  showWiz(target);
+}));
+let previewQueued = false;
+function updatePreview() {
+  const budget = wholeInt($("fBudget").value) || 0, pct = wholeInt($("fBond").value) || 0;
+  const bidMin = minutesOf("tBid", "uBid"), revMin = minutesOf("tRev", "uRev"), maxMin = minutesOf("tMax", "uMax");
+  const budgetWei = BigInt(budget) * WEI_PER_GEN;
+  const r = { project_id: "preview", title: $("fTitle").value.trim() || "Your project title", client: account || ZERO, phase: "bidding", status: "bidding",
+    budget: budgetWei.toString(), bond: (budgetWei * BigInt(pct) / 100n).toString(), price: "0", winner: "", active_bids: 0,
+    milestones_total: mss.length, milestones_done: 0, next_deadline: bidMin ? new Date(Date.now() + bidMin * 60000).toISOString() : null };
+  clear($("previewCard")).appendChild(projectCard(r));
+  const wsum = crits.reduce((a, c) => a + c.weight, 0);
+  const row = (k, v) => h("div", {}, h("span", { text: k }), h("b", { text: v }));
+  clear($("sumList")).append(
+    row("You lock", budget ? `${budget} GEN` : "-"),
+    row("Bond per bidder", budget && pct ? `${(budget * pct) / 100} GEN (${pct}%)` : "-"),
+    row("Criteria", `${crits.length} \u00B7 max score ${3 * wsum}`),
+    row("Qualifying score", `${Math.ceil(0.34 * 3 * wsum)} of ${3 * wsum}`),
+    row("Milestones", mss.map((m) => (m.pct || 0) + "%").join(" / ")),
+    row("Bidding closes", bidMin ? new Date(Date.now() + bidMin * 60000).toLocaleString() : "-"),
+    row("Review window", revMin ? fmtDur(revMin * 60000) : "-"),
+    row("Longest delivery", maxMin ? fmtDur(maxMin * 60000) : "-"));
+}
+function schedulePreview() { if (previewQueued) return; previewQueued = true; requestAnimationFrame(() => { previewQueued = false; updatePreview(); }); }
+$("route-new").addEventListener("input", schedulePreview);
+$("route-new").addEventListener("change", schedulePreview);
+$("presetStd").addEventListener("click", schedulePreview); $("presetTest").addEventListener("click", schedulePreview);
+$("addCrit").addEventListener("click", schedulePreview); $("addMs").addEventListener("click", schedulePreview);
+renderCrits(); renderMs(); showWiz(0);
 
 /* ---------- Project page ---------- */
 const ACTION_LABEL = {
@@ -1135,79 +1563,142 @@ const ACTION_LABEL = {
 let currentProject = null, lastSignature = "", renderToken = 0;
 const projectView = $("projectView");
 
-function moneyCard(p) {
-  const locked = BigInt(p.locked), paidW = BigInt(p.released.winner) + BigInt(p.released.winner_bond), toClient = BigInt(p.released.client) + BigInt(p.released.forfeit);
-  return h("div", { class: "card" }, h("h3", { text: "Money" }),
-    h("div", { class: "money", style: "margin-top:10px" },
-      h("div", {}, h("b", { text: gen(p.budget) }), h("span", { text: "budget locked at creation" })),
-      h("div", {}, h("b", { text: p.winner ? gen(p.price) : "-" }), h("span", { text: "winning price" })),
-      h("div", {}, h("b", { text: gen(p.bond) }), h("span", { text: "bond per bidder" })),
-      h("div", {}, h("b", { text: gen(locked) }), h("span", { text: "still held by the contract" })),
-      h("div", {}, h("b", { text: gen(paidW) }), h("span", { text: "paid to the winner (incl. bond back)" })),
-      h("div", {}, h("b", { text: gen(toClient) }), h("span", { text: "returned to the client" }))));
+function escrowCard(p) {
+  const B = (x) => BigInt(x || 0);
+  const budget = B(p.budget), bondsIn = p.bids.reduce((a, b) => a + B(b.bond), 0n);
+  const r = p.released, locked = B(p.locked);
+  const parts = [
+    ["Paid to the winner", B(r.winner), "#3DDC84"], ["Bond returned to the winner", B(r.winner_bond), "#9BF0C1"],
+    ["Returned to the client", B(r.client), "#FF8A1F"], ["Bonds refunded to bidders", B(r.bidders), "#9A9BFF"],
+    ["Forfeited to the client", B(r.forfeit), "#FF6B6B"], ["Held in escrow now", locked, "#6B6357"]];
+  const total = budget + bondsIn;
+  const out = parts.reduce((a, x) => a + x[1], 0n);
+  const pct = (v) => (total > 0n ? Number((v * 10000n) / total) / 100 : 0);
+  return h("div", { class: "card" },
+    h("div", { class: "row" }, h("h3", { text: "Escrow ledger" }),
+      h("span", { class: "ok-seal", style: out === total ? "" : "color:var(--red)", text: out === total ? "✓ Every GEN accounted for" : "✗ Does not add up" })),
+    h("div", { class: "ledger-bar" }, parts.filter((x) => x[1] > 0n).map(([n, v, c]) => h("span", { title: `${n}: ${gen(v)}`, style: `width:${pct(v)}%;background:${c}` }))),
+    h("div", { class: "lgroup", text: "Came in" }),
+    h("div", { class: "lrow" }, h("i", { style: "background:var(--ink)" }), h("span", { text: "Client budget" }), h("b", { text: gen(budget) })),
+    h("div", { class: "lrow" }, h("i", { style: "background:var(--dim)" }), h("span", { text: `Bidder bonds (${p.bids.length} × ${gen(p.bond)})` }), h("b", { text: gen(bondsIn) })),
+    h("div", { class: "lgroup", text: "Went out or is still held" }),
+    parts.map(([n, v, c]) => h("div", { class: "lrow" }, h("i", { style: `background:${c}` }), h("span", { text: n }), h("b", { text: gen(v) }))),
+    h("p", { class: "hint", text: "Read directly from the contract's per-project ledger. Payouts are credited to each owner's balance and withdrawn by them." }));
 }
 function criteriaCard(p) {
-  return h("div", { class: "card" }, h("h3", { text: "What the winner is chosen on" }),
+  const wsum = p.weights.reduce((a, w) => a + w, 0);
+  return h("div", { class: "card" }, h("h3", { text: "The rules, written before bidding" }),
     h("p", { class: "muted", style: "margin:6px 0 4px;font-size:14px", text: p.brief }),
-    h("div", { style: "margin-top:8px" }, p.criteria.map((c, i) => h("div", { class: "crit" }, h("i", { text: "C" + (i + 1) }), h("span", { text: c }), h("span", { class: "w", text: "weight " + p.weights[i] })))),
-    h("p", { class: "hint", text: "The brief above is context for the evaluator. Only the written criteria are scored. Price and delivery time count only where a criterion mentions them." }));
+    h("div", { style: "margin-top:8px" }, p.criteria.map((c, i) => h("div", { class: "crit" }, h("i", { text: "C" + (i + 1) }), h("span", { text: c }), h("span", { class: "w", text: `weight ${p.weights[i]} · up to ${3 * p.weights[i]} pts` })))),
+    h("p", { class: "hint", text: `Maximum score ${3 * wsum}. A winner needs at least 34% (${Math.ceil(0.34 * 3 * wsum)}). Criteria digest ${p.criteria_digest.slice(0, 12)}… fixes this text on-chain.` }));
 }
-function meter(score) { return h("div", { class: "meter" }, [0, 1, 2].map((i) => h("i", { class: i < score ? "on" : "" }))); }
-function bidCard(p, b) {
-  const sel = p.selection, label = "B" + b.index, scores = sel?.scores?.[label], total = sel?.totals?.[label];
-  const node = h("div", { class: "bid " + b.status },
+function repChips(pr) {
+  if (!pr) return null;
+  const w = pr.as_winner;
+  const fin = w.completed + w.failed;
+  if (!fin && !pr.as_bidder.bids && !pr.as_client.projects) return h("div", { class: "rep" }, h("span", { text: "New on BidRoom" }));
+  return h("div", { class: "rep" },
+    h("span", { class: w.completed ? "g" : "", text: `${w.completed} delivered` }),
+    w.failed ? h("span", { class: "r", text: `${w.failed} failed` }) : null,
+    h("span", { text: `${weiToGen(w.earned_wei)} GEN earned` }),
+    w.accepted + w.rejected + w.partial ? h("span", { text: `rulings ${w.accepted}✓ ${w.partial}½ ${w.rejected}✗` }) : null,
+    fin ? h("span", { class: pr.reliability_bps >= 8000 ? "g" : "r", text: `${pr.reliability_bps / 100}% reliable` }) : null);
+}
+function bidCard(p, b, profiles) {
+  return h("div", { class: "bid " + b.status },
     h("div", { class: "row wraprow" },
-      h("b", { text: `Bid ${label}` }),
+      h("b", { text: `Bid B${b.index}` }),
       h("span", { class: "pill " + (b.status === "won" ? "good" : b.status === "active" ? "bidding" : "neutral"), text: b.status === "won" ? "Winner" : b.status })),
-    h("div", { class: "meta" }, h("span", { class: "mono", text: short(b.bidder) + (account && same(b.bidder, account) ? " (you)" : "") }), h("span", { text: `${b.price_units} GEN` }), h("span", { text: `${fmtDur(b.minutes * 60000)} delivery` })),
-    h("div", { class: "prop", text: b.proposal }));
-  if (scores) {
-    node.appendChild(h("div", { class: "scores" },
-      scores.map((s, i) => h("div", { class: "score" }, h("b", { text: "C" + (i + 1) }), meter(s), h("span", { class: "faint", text: `${s}/3 x${p.weights[i]}` })))));
-    node.appendChild(h("div", { class: "totalbar" }, h("span", { style: `width:${Math.round((total / sel.max_total) * 100)}%` }), h("u", { style: `left:${sel.min_qualifying_pct}%`, title: "qualifying line" })));
-    node.appendChild(h("div", { class: "faint", text: `Weighted score ${total} of ${sel.max_total}. Red line: ${sel.min_qualifying_pct}% needed to qualify.` }));
-  }
-  return node;
+    h("div", { class: "meta" }, addrLink(b.bidder), h("span", { text: `${b.price_units} GEN` }), h("span", { text: `${fmtDur(b.minutes * 60000)} delivery` }), h("span", { text: timeAgo(b.placed_at) })),
+    h("div", { class: "prop", text: b.proposal }),
+    repChips(profiles[b.bidder]));
 }
-function bidsCard(p) {
-  const kids = [h("div", { class: "row" }, h("h3", { text: `Bids (${p.bids.length})` }), p.selection ? h("span", { class: "pill selection", text: "Blind scored" }) : null)];
+function selectionReport(p) {
+  const sel = p.selection;
+  if (!sel) return null;
+  const judged = p.bids.filter((b) => sel.scores["B" + b.index]);
+  const rank = judged.slice().sort((a, b) => sel.totals["B" + b.index] - sel.totals["B" + a.index]);
+  const thr = Math.ceil((sel.min_qualifying_pct * sel.max_total) / 100);
+  return h("div", { class: "card" },
+    h("div", { class: "row wraprow" }, h("h3", { text: "AI selection report" }), h("span", { class: "pill " + (sel.qualified ? "good" : "bad"), text: sel.qualified ? `Winner B${sel.winner}` : "No bid qualified" })),
+    h("p", { class: "hint", text: `Judged ${fmtTime(sel.selected_at)}. The evaluator saw labels only, never addresses. Each validator scored independently; the result stood only because they reached the same winner.` }),
+    h("div", { class: "tablewrap", style: "margin-top:12px" }, h("table", { class: "matrix" },
+      h("tr", {}, h("th", { text: "Bid" }), p.criteria.map((c, i) => h("th", { title: c, text: `C${i + 1} ×${p.weights[i]}` })), h("th", { text: "Total" })),
+      rank.map((b) => {
+        const sc = sel.scores["B" + b.index], tot = sel.totals["B" + b.index];
+        return h("tr", { class: sel.qualified && b.index === sel.winner ? "win" : "" },
+          h("td", {}, h("b", { text: "B" + b.index + " " }), addrLink(b.bidder)),
+          sc.map((v) => h("td", { class: "sc sc" + v, text: String(v) })),
+          h("td", { class: "tot", text: `${tot}/${sel.max_total}` }));
+      }))),
+    h("p", { class: "hint", text: `Scores 0 to 3 per criterion, multiplied by its weight. Qualifying line: ${thr} points (${sel.min_qualifying_pct}%). Ties go to the lower price, then the earlier bid.` }),
+    h("div", { class: "ruling" }, h("b", { text: sel.qualified ? "Recorded reasoning" : "Why nobody was awarded" }), h("div", { class: "quote", text: sel.reasoning || "(no reasoning recorded)" })),
+    h("p", { class: "faint", style: "margin-top:10px;word-break:break-all", text: `Bids digest ${sel.bids_digest} · criteria digest ${sel.criteria_digest}` }));
+}
+function bidsCard(p, profiles) {
+  const kids = [h("div", { class: "row wraprow" }, h("h3", { text: `Bids (${p.bids.length})` }), h("span", { class: "faint", text: "Track records come from on-chain history" }))];
   if (!p.bids.length) kids.push(h("div", { class: "empty", text: "No bids yet." }));
-  for (const b of p.bids) kids.push(bidCard(p, b));
-  if (p.selection) {
-    kids.push(h("div", { class: "ruling" },
-      h("b", { text: p.selection.qualified ? "Why the winner won" : "Why nobody was awarded" }),
-      h("div", { class: "quote", text: p.selection.reasoning || "(no reasoning recorded)" }),
-      h("div", { class: "faint", text: "The evaluator saw only labels B0, B1 and so on, never an address. Digest of the bids it judged: " + p.selection.bids_digest.slice(0, 16) + "... Digest of the criteria: " + p.selection.criteria_digest.slice(0, 16) + "..." })));
-  }
+  for (const b of p.bids) kids.push(bidCard(p, b, profiles));
   return h("div", { class: "card" }, kids);
+}
+const SEAL = { ACCEPTED: "✓", PARTIAL: "½", REJECTED: "✗", TIMEOUT_SPLIT: "⏱" };
+const VERDICT_TEXT = { ACCEPTED: "Accepted: the delivery meets the written rule", PARTIAL: "Partial: some of the rule is met", REJECTED: "Rejected: the delivery does not meet the rule", TIMEOUT_SPLIT: "No ruling in 72 hours: split evenly" };
+function arbitrationReport(p, m, r, isLast) {
+  const effect = [];
+  if (isLast && ["approved", "split"].includes(m.status)) {
+    effect.push(h("span", { style: "background:var(--green-soft);color:var(--green)", text: `Winner +${gen(m.paid_to_winner)}` }));
+    if (BigInt(m.refunded_to_client || 0) > 0n) effect.push(h("span", { style: "background:var(--brand-soft);color:var(--brand-deep)", text: `Client +${gen(m.refunded_to_client)}` }));
+  } else if (r.ruling === "REJECTED") {
+    effect.push(r.attempt >= 2 ? h("span", { style: "background:var(--red-soft);color:var(--red)", text: "Second rejection: unpaid milestones and the bond went to the client" })
+      : h("span", { style: "background:var(--amber-soft);color:var(--amber)", text: "Milestone reopened for one redo" }));
+  }
+  const url = r.delivery_url || m.delivery_url;
+  return h("div", { class: "arb" },
+    h("div", { class: "arb-head" }, h("div", { class: "seal " + r.ruling, text: SEAL[r.ruling] || "?" }),
+      h("div", { style: "min-width:0" }, h("b", { text: VERDICT_TEXT[r.ruling] || r.ruling }), h("span", { class: "faint", text: `AI arbitration · round ${r.attempt} · ${fmtTime(r.ruled_at)}` }))),
+    h("div", { class: "arb-grid" },
+      h("div", { class: "arb-cell" }, h("h5", { text: "The written rule" }), h("div", { text: m.acceptance }), h("div", { class: "faint", style: "margin-top:6px", text: "Fixed when the project was created " + fmtTime(p.created_at) })),
+      h("div", { class: "arb-cell" }, h("h5", { text: "The delivered evidence" }),
+        url ? h("a", { href: url, target: "_blank", rel: "noopener noreferrer", text: url }) : h("span", { text: "-" }),
+        r.quote ? h("div", { class: "quote", style: "margin-top:8px", text: "“" + r.quote + "”" }) : null,
+        r.quote ? h("div", { class: "faint", text: "Verbatim from the page. The contract rejects any ruling whose quote is not on the page." }) : null),
+      h("div", { class: "arb-cell" }, h("h5", { text: "Freelancer's note (claim)" }), h("div", { text: r.note || m.note || "(none)" })),
+      h("div", { class: "arb-cell" }, h("h5", { text: "Client's complaint (claim)" }), h("div", { text: r.complaint || m.dispute_reason || "(none)" }))),
+    r.reasoning ? h("div", { class: "arb-cell" }, h("h5", { text: "Arbiter's reasoning" }), h("div", { text: r.reasoning })) : null,
+    effect.length ? h("div", { class: "arb-out" }, effect) : null,
+    h("div", { class: "arb-foot" }, r.ruling === "TIMEOUT_SPLIT" ? "Applied by the contract's 72-hour fallback. " :
+      "Leader and validators each fetched the page and judged it on their own; the ruling stood only because they matched. ",
+      r.ruled_by ? ["Triggered by ", addrLink(r.ruled_by), "."] : null));
 }
 const MS_PILL = { pending: ["warn", "Waiting for delivery"], submitted: ["selection", "In review"], disputed: ["bad", "In dispute"], approved: ["good", "Paid"], split: ["warn", "Split 50/50"] };
 function milestonesCard(p) {
   const cur = p.milestones.findIndex((m) => ["pending", "submitted", "disputed"].includes(m.status));
+  const live = ["delivery", "dispute"].includes(p.status);
   const items = p.milestones.map((m, i) => {
     const redo = m.status === "pending" && m.attempts > 0;
     const [kind, label] = redo ? ["bad", "Redo requested"] : MS_PILL[m.status];
-    const isCur = i === cur && !["completed", "failed", "cancelled", "expired"].includes(p.status) && ["delivery", "dispute"].includes(p.status);
+    const isCur = i === cur && live;
     const cls = m.status === "approved" ? "done" : m.status === "split" ? "split" : isCur ? "now" : "";
+    const paidW = BigInt(m.paid_to_winner || 0), paidC = BigInt(m.refunded_to_client || 0), amt = BigInt(m.amount || 0);
     return h("div", { class: "item " + cls },
       h("div", { class: "row wraprow" }, h("b", { text: `${i + 1}. ${m.title}` }), h("span", { class: "pill " + kind, text: label })),
-      h("div", { class: "faint", text: `${m.bps / 100}% ` + (p.winner ? `- ${gen(m.amount)}` : "") + (isCur && m.deadline && m.status === "pending" ? " - due " + fmtTime(redo ? m.hard_deadline : m.deadline) : "") }),
-      h("div", { style: "font-size:13.5px;margin-top:4px" }, h("span", { class: "faint", text: "Acceptance: " }), m.acceptance),
-      m.delivery_url ? h("div", { style: "font-size:13.5px;margin-top:4px;word-break:break-all" }, h("span", { class: "faint", text: redo ? "Rejected delivery: " : "Delivered: " }), h("a", { href: m.delivery_url, target: "_blank", rel: "noopener noreferrer", text: m.delivery_url })) : null,
-      m.note ? h("div", { class: "faint", text: "Winner's note: " + m.note }) : null,
-      m.status === "submitted" ? h("div", { class: "faint" }, "Client review closes in ", countdown(m.review_deadline)) : null,
-      m.dispute_reason ? h("div", { class: "faint", text: "Client's complaint: " + m.dispute_reason }) : null,
-      m.rulings.map((r) => h("div", { class: "ruling" },
-        h("div", { class: "row" }, h("b", { text: "Ruling " + r.attempt + ": " + r.ruling }), h("span", { class: "faint", text: fmtTime(r.ruled_at) })),
-        r.quote ? h("div", { class: "quote", text: r.quote }) : null,
-        r.reasoning ? h("div", { class: "faint", text: r.reasoning }) : null)));
+      h("div", { class: "faint", text: `${m.bps / 100}% ` + (p.winner ? `· ${gen(m.amount)}` : "") }),
+      isCur && m.status === "pending" && m.deadline ? h("div", { class: "faint" }, "Due ", countdown(redo ? m.hard_deadline : m.deadline), " · refundable to the client after ", h("span", { text: fmtTime(m.hard_deadline) })) : null,
+      m.status === "submitted" ? h("div", { class: "faint" }, "Client review closes in ", countdown(m.review_deadline), ". Silence counts as approval.") : null,
+      m.status === "disputed" ? h("div", { class: "faint" }, "Awaiting the arbiter. 50/50 fallback in ", countdown(m.ruling_deadline)) : null,
+      h("div", { style: "font-size:13.5px;margin-top:6px" }, h("span", { class: "faint", text: "Acceptance rule: " }), m.acceptance),
+      m.delivery_url && m.status !== "approved" && m.status !== "split" ? h("div", { style: "font-size:13.5px;margin-top:4px;word-break:break-all" }, h("span", { class: "faint", text: redo ? "Rejected delivery: " : "Delivered: " }), h("a", { href: m.delivery_url, target: "_blank", rel: "noopener noreferrer", text: m.delivery_url })) : null,
+      ["approved", "split"].includes(m.status) && amt > 0n ? h("div", {}, h("div", { class: "ms-split" }, h("span", { style: `width:${Number((paidW * 100n) / amt)}%;background:var(--green)` }), h("span", { style: `width:${Number((paidC * 100n) / amt)}%;background:var(--brand)` })),
+        h("div", { class: "faint", text: `Winner ${gen(paidW)} · client ${gen(paidC)} · ${fmtTime(m.settled_at)}` })) : null,
+      m.rulings.map((r, k) => arbitrationReport(p, m, r, k === m.rulings.length - 1)));
   });
-  return h("div", { class: "card" }, h("h3", { text: "Milestones" }), h("div", { class: "tl", style: "margin-top:14px" }, items));
+  return h("div", { class: "card" }, h("h3", { text: "Milestones and payments" }), h("div", { class: "tl", style: "margin-top:14px" }, items));
 }
 function historyCard(p) {
-  return h("div", { class: "card" }, h("details", {}, h("summary", { text: `History (${p.history.length})` }),
-    h("div", { class: "hist", style: "margin-top:12px" }, p.history.slice().reverse().map((e) => [
-      h("time", { text: fmtTime(e.t) }), h("span", {}, h("b", { text: e.event.replace(/_/g, " ") }), " ", h("span", { class: "faint", text: e.detail + " - " + short(e.by) }))]))));
+  const ev = p.history.slice().reverse().map((e) => Object.assign({ project_id: p.project_id }, e));
+  const box = h("div", { class: "feed" }, ev.slice(0, 8).map((e) => eventRow(e, false)));
+  const more = ev.length > 8 ? h("button", { class: "ghost small", style: "margin-top:8px", text: `Show all ${ev.length} events`, onclick: (e) => { clear(box).append(...ev.map((x) => eventRow(x, false))); e.target.remove(); } }) : null;
+  return h("div", { class: "card" }, h("div", { class: "row" }, h("h3", { text: "On-chain event log" }), h("span", { class: "faint", text: `${p.history.length} events` })), box, more);
 }
 function trackerNode(p, info) {
   const idx = phaseIndex(info.phase);
@@ -1326,10 +1817,14 @@ function outcomeBanner(p) {
   return h("div", { class: "verdict " + (OUTCOME_KIND[p.status] || "neutral") }, p.status.charAt(0).toUpperCase() + p.status.slice(1),
     h("small", { text: END_TEXT[p.end_reason] || "" }));
 }
-function infoCard(p) {
-  return h("div", { class: "card" }, h("dl", { class: "kv" },
-    h("dt", { text: "Client" }), h("dd", { class: "mono", text: p.client }),
-    p.winner ? [h("dt", { text: "Winner" }), h("dd", { class: "mono", text: p.winner })] : null,
+function infoCard(p, profiles) {
+  const cp = profiles && profiles[p.client];
+  return h("div", { class: "card" }, h("h3", { text: "Parties and terms", style: "margin-bottom:12px" }),
+    cp ? h("div", { style: "margin-bottom:12px" }, h("span", { class: "faint", text: "Client track record" }),
+      h("div", { class: "rep" }, h("span", { text: `${cp.as_client.projects} posted` }), h("span", { class: cp.as_client.completed ? "g" : "", text: `${cp.as_client.completed} completed` }), cp.as_client.failed ? h("span", { class: "r", text: `${cp.as_client.failed} failed` }) : null)) : null,
+    h("dl", { class: "kv" },
+    h("dt", { text: "Client" }), h("dd", {}, addrLink(p.client, p.client)),
+    p.winner ? [h("dt", { text: "Winner" }), h("dd", {}, addrLink(p.winner, p.winner))] : null,
     h("dt", { text: "Created" }), h("dd", { text: fmtTime(p.created_at) }),
     h("dt", { text: "Bidding closes" }), h("dd", { text: fmtTime(p.bidding_deadline) }),
     h("dt", { text: "Windows" }), h("dd", { text: `confirm ${fmtDur(p.accept_minutes * 60000)}, review ${fmtDur(p.review_minutes * 60000)}, grace ${fmtDur(p.grace_minutes * 60000)}` }),
@@ -1348,6 +1843,8 @@ async function renderProject(id, quiet) {
   let mineInfo;
   try { mineInfo = await readJson("get_actions", [id, me]); } catch (e) { mineInfo = { roles: [], actions: [], phase: { phase: "bidding", status: p.status, next_deadline: null, waiting_on: "none" } }; }
   const byRole = Object.fromEntries(await Promise.all(calls));
+  const people = Array.from(new Set([p.client, ...p.bids.map((b) => b.bidder)]));
+  const profiles = Object.fromEntries(await Promise.all(people.map((a) => readJson("get_profile", [a]).then((v) => [a, v]).catch(() => [a, null]))));
   if (token !== renderToken) return;
   const signature = JSON.stringify([p, mineInfo]);
   if (quiet && signature === lastSignature) return;
@@ -1355,11 +1852,12 @@ async function renderProject(id, quiet) {
   lastSignature = signature; currentProject = id;
   const info = mineInfo.phase;
   const refresh = () => renderProject(id, false);
-  const main = h("div", { class: "stack" }, moneyCard(p), criteriaCard(p), bidsCard(p), milestonesCard(p), infoCard(p), historyCard(p));
+  const awarded = !!p.winner;
+  const main = h("div", { class: "stack" }, awarded ? milestonesCard(p) : null, selectionReport(p), escrowCard(p), criteriaCard(p), bidsCard(p, profiles), awarded ? null : milestonesCard(p), historyCard(p), infoCard(p, profiles));
   const side = h("div", { class: "side" }, yourMove(p, info, mineInfo.actions, refresh), matrixCard(p, byRole, mineInfo.roles));
   clear(projectView).append(
     h("div", { class: "pj-head pj-hero" }, coverArt(p.project_id + "|" + p.title, info.phase),
-      h("div", {}, h("div", { style: "opacity:.85;font-size:13px;font-weight:700", text: p.project_id.replace("project_", "Project #") + " · by " + short(p.client) }),
+      h("div", {}, h("div", { style: "opacity:.85;font-size:13px;font-weight:700", text: p.project_id.replace("project_", "Project #") + " · by " + short(p.client) + " · last activity " + timeAgo(p.history[p.history.length - 1].t) }),
         h("h1", { text: p.title }),
         h("div", { class: "hmeta" },
           h("span", { class: "badge" }, h("span", { class: "bd", style: `background:${PHASE_COLOR[info.phase]}` }), PHASE_NAME[info.phase] || info.phase),
@@ -1371,41 +1869,114 @@ async function renderProject(id, quiet) {
 setInterval(() => { if (currentProject && location.hash.startsWith("#/project/") && !document.hidden) renderProject(currentProject, true); }, 15000);
 
 /* ---------- My account ---------- */
+function ring(bps) {
+  const C = 2 * Math.PI * 36, frac = bps === null ? 0 : bps / 10000;
+  const col = bps === null ? "var(--line)" : bps >= 8000 ? "var(--green)" : bps >= 5000 ? "var(--amber)" : "var(--red)";
+  return s_("svg", { viewBox: "0 0 92 92", "aria-hidden": "true" },
+    s_("circle", { cx: 46, cy: 46, r: 36, fill: "none", stroke: "var(--line)", "stroke-width": 9 }),
+    s_("circle", { cx: 46, cy: 46, r: 36, fill: "none", stroke: col, "stroke-width": 9, "stroke-linecap": "round", "stroke-dasharray": `${C * frac} ${C}`, transform: "rotate(-90 46 46)" }),
+    (() => { const t = s_("text", { x: 46, y: 52, "text-anchor": "middle", "font-size": 18, "font-weight": 900, fill: "currentColor" }); t.textContent = bps === null ? "-" : Math.round(bps / 100) + "%"; return t; })());
+}
 function profileNode(pr) {
   const c = pr.as_client, b = pr.as_bidder, w = pr.as_winner;
-  const stat = (label, value) => h("div", {}, h("b", { text: String(value) }), h("span", { text: label }));
+  const tile = (label, value) => h("div", { class: "tile" }, h("b", { text: String(value) }), h("span", { text: label }));
   return h("div", {},
-    h("div", { class: "row wraprow" }, h("h3", { text: "Track record" }), h("span", { class: "pill " + (pr.reliability_bps === null ? "neutral" : pr.reliability_bps >= 8000 ? "good" : "warn"), text: pr.reliability_bps === null ? "No finished work yet" : `Reliability ${pr.reliability_bps / 100}%` })),
-    h("h4", { style: "margin-top:14px", text: "As client" }), h("div", { class: "money" }, stat("projects", c.projects), stat("completed", c.completed), stat("failed", c.failed), stat("closed empty", c.closed_empty), stat("open", c.open)),
-    h("h4", { style: "margin-top:10px", text: "As bidder" }), h("div", { class: "money" }, stat("bids", b.bids), stat("won", b.won), stat("lost", b.lost), stat("withdrawn", b.withdrawn)),
-    h("h4", { style: "margin-top:10px", text: "As winner" }), h("div", { class: "money" }, stat("awarded", w.awarded), stat("completed", w.completed), stat("failed", w.failed), stat("earned (GEN)", weiToGen(w.earned_wei)), stat("rulings won", w.accepted), stat("rulings lost", w.rejected)));
+    h("div", { class: "ring" }, ring(pr.reliability_bps),
+      h("div", {}, h("b", { text: pr.reliability_bps === null ? "No finished work yet" : "Delivery reliability" }),
+        h("div", { class: "faint", text: pr.reliability_bps === null ? "Reliability appears after the first awarded project closes." : `${w.completed} completed, ${w.failed} failed as the winner.` }))),
+    h("h4", { style: "margin-top:18px", text: "As client" }), h("div", { class: "tiles" }, tile("projects", c.projects), tile("completed", c.completed), tile("failed", c.failed), tile("open", c.open)),
+    h("h4", { style: "margin-top:14px", text: "As bidder" }), h("div", { class: "tiles" }, tile("bids", b.bids), tile("won", b.won), tile("lost", b.lost), tile("withdrawn", b.withdrawn)),
+    h("h4", { style: "margin-top:14px", text: "As winner" }), h("div", { class: "tiles" }, tile("earned (GEN)", weiToGen(w.earned_wei)), tile("awarded", w.awarded), tile("rulings won", w.accepted), tile("rulings lost", w.rejected)));
 }
 async function loadMe() {
   $("myAddr").textContent = account || "Not connected";
+  $("meProfileLink").setAttribute("href", account ? "#/u/" + account : "#/me");
+  $("meProfileLink").style.display = account ? "inline-block" : "none";
+  const av = avatar(account || "0x0"); av.classList.add("big"); av.id = "meAv"; $("meAv").replaceWith(av);
   const books = clear($("booksBox"));
   try {
     const a = await readJson("get_accounting");
     books.append(h("div", { text: `Contract holds ${gen(a.contract_balance)}` }), h("div", { class: "faint", text: `Locked in projects ${gen(a.locked_in_projects)} + claimable ${gen(a.pending_withdrawals)}` }),
       h("span", { class: "pill " + (a.balanced ? "good" : "bad"), style: "margin-top:8px", text: a.balanced ? "Books balance" : "Books do not balance" }));
   } catch (e) { books.textContent = "Not available."; }
-  if (!account) { $("myPending").textContent = "-"; clear($("profileCard")).appendChild(h("p", { class: "muted", text: "Connect a wallet to see your balance and track record." })); return; }
+  const mine = clear($("myProjects"));
+  clear($("meRoles"));
+  if (!account) {
+    $("myPending").textContent = "-";
+    clear($("profileCard")).append(h("h3", { text: "Track record" }), h("p", { class: "muted", style: "margin-top:8px", text: "Connect a wallet to see your balance and track record." }), h("button", { onclick: openSheet, text: "Connect wallet" }));
+    mine.appendChild(h("div", { class: "empty", text: "Connect a wallet to see your projects." }));
+    return;
+  }
   try { $("myPending").textContent = gen(await read("get_pending_withdrawal", [account])); } catch (e) { $("myPending").textContent = "?"; }
-  try { clear($("profileCard")).appendChild(profileNode(await readJson("get_profile", [account]))); } catch (e) { clear($("profileCard")).appendChild(h("p", { class: "muted", text: "Could not load your profile." })); }
+  try {
+    const pr = await readJson("get_profile", [account]);
+    clear($("profileCard")).append(h("h3", { text: "Track record", style: "margin-bottom:14px" }), profileNode(pr));
+    const tags = [];
+    if (pr.as_client.projects) tags.push(`Client \u00D7 ${pr.as_client.projects}`);
+    if (pr.as_bidder.bids) tags.push(`Bidder \u00D7 ${pr.as_bidder.bids}`);
+    if (pr.as_winner.awarded) tags.push(`Winner \u00D7 ${pr.as_winner.awarded}`);
+    $("meRoles").append(...(tags.length ? tags : ["New here"]).map((t) => h("span", { class: "tg hot", text: t })));
+  } catch (e) { clear($("profileCard")).appendChild(h("p", { class: "muted", text: "Could not load your profile." })); }
+  try {
+    const rows = await readJson("get_address_projects", [account]);
+    if (!rows.length) mine.appendChild(h("div", { class: "empty" }, h("p", { text: "You have not posted, bid on or won a project yet." }), h("a", { class: "btn primary", href: "#/new", text: "Post a project" })));
+    for (const r of rows) mine.appendChild(projectCard(r));
+  } catch (e) { mine.appendChild(h("div", { class: "empty", text: "Could not load projects." })); }
 }
 $("withdrawBtn").addEventListener("click", async () => { const r = await write($("wOut"), "withdraw", "withdraw", []); if (r) loadMe(); });
 $("checkPendingBtn").addEventListener("click", loadMe);
-$("pBtn").addEventListener("click", async () => {
-  const a = $("pAddr").value.trim() || account || ""; const out = $("pOut");
-  if (!okAddr(a)) return showOut(out, "Enter a 0x address.", "err");
-  try { out.style.display = "none"; clear($("pBox")).appendChild(profileNode(await readJson("get_profile", [a]))); } catch (e) { showOut(out, "Error: " + (e?.message || String(e)), "err"); }
+$("pBtn").addEventListener("click", () => {
+  const a = $("pAddr").value.trim() || account || "";
+  if (!okAddr(a)) return showOut($("pOut"), "Enter a 0x address.", "err");
+  location.hash = "#/u/" + a;
 });
 
+/* ---------- Public profile ---------- */
+async function renderUser(addr) {
+  const view = clear($("userView"));
+  if (!okAddr(addr)) { view.appendChild(h("div", { class: "empty", text: "That is not a valid address." })); return; }
+  view.appendChild(h("div", { class: "empty" }, h("span", { class: "spin" }), "Loading on-chain record..."));
+  let pr, rows;
+  try { [pr, rows] = await Promise.all([readJson("get_profile", [addr]), readJson("get_address_projects", [addr])]); }
+  catch (e) { clear(view).appendChild(h("div", { class: "empty", text: "Could not load this profile: " + (e?.message || String(e)) })); return; }
+  const B = (x) => BigInt(x || 0);
+  let escrowed = 0n, earned = 0n, bonds = 0n;
+  for (const r of rows) {
+    if (r.roles.includes("client")) escrowed += B(r.budget);
+    if (r.roles.includes("winner")) { earned += B(r.released.winner); }
+    for (const b of r.my_bids) bonds += B(r.bond);
+  }
+  const av = avatar(addr); av.classList.add("big");
+  const mine = account && same(addr, account);
+  const copyBtn = h("a", { href: "#", text: "copy address", onclick: async (e) => { e.preventDefault(); try { await navigator.clipboard.writeText(addr); e.target.textContent = "copied"; } catch (err) { e.target.textContent = "select it"; } } });
+  const roleTag = (r) => h("span", { class: "tg" + (r === "winner" ? " hot" : ""), text: r });
+  clear(view).append(
+    h("div", { class: "card" }, h("div", { class: "prof-head" }, av,
+      h("div", { style: "min-width:0" }, h("div", { class: "eyebrow", text: mine ? "Your public profile" : "Public profile" }),
+        h("div", { class: "mono", style: "word-break:break-all;margin-top:6px;font-size:15px", text: addr }), h("div", { style: "margin-top:4px" }, copyBtn)),
+      h("div", { class: "ring" }, ring(pr.reliability_bps), h("div", {}, h("b", { text: pr.reliability_bps === null ? "No finished work yet" : "Delivery reliability" }),
+        h("div", { class: "faint", text: `${pr.as_winner.completed} completed · ${pr.as_winner.failed} failed as winner` }))))),
+    h("div", { class: "tiles", style: "margin-top:12px" },
+      h("div", { class: "tile" }, h("b", { text: weiToGen(earned) }), h("span", { text: "GEN earned as winner" })),
+      h("div", { class: "tile" }, h("b", { text: weiToGen(escrowed) }), h("span", { text: "GEN escrowed as client" })),
+      h("div", { class: "tile" }, h("b", { text: String(pr.as_bidder.bids) }), h("span", { text: `bids · ${pr.as_bidder.won} won` })),
+      h("div", { class: "tile" }, h("b", { text: `${pr.as_winner.accepted}/${pr.as_winner.partial}/${pr.as_winner.rejected}` }), h("span", { text: "rulings accepted / partial / rejected" }))),
+    h("div", { class: "card", style: "margin-top:12px" }, h("div", { class: "row wraprow" }, h("h3", { text: "Verifiable record" }), h("span", { class: "faint", text: `${rows.length} project${rows.length === 1 ? "" : "s"}` })),
+      h("p", { class: "hint", text: "Every row is read from the contract. Nothing here is self-reported." }),
+      rows.length ? h("div", { style: "margin-top:6px" }, rows.map((r) => h("a", { class: "recrow", href: "#/project/" + encodeURIComponent(r.project_id) },
+          h("div", { style: "min-width:0" }, h("b", { text: r.title }), h("div", { class: "tags", style: "margin-top:6px" }, phasePill(r.phase, r.phase === "closed" ? r.status : undefined), r.roles.map(roleTag))),
+          h("div", { class: "recnum" }, h("b", { text: r.winner ? gen(r.price) : gen(r.budget) }), h("span", { text: r.winner ? "contract value" : "budget" }),
+            BigInt(r.released.winner || 0) > 0n ? h("span", { style: "color:var(--green)", text: gen(r.released.winner) + " paid out" }) : null)))) : h("div", { class: "empty", text: "No projects yet." })));
+      
+}
+
 /* ---------- router ---------- */
-const TABS = { home: "home", new: "new", me: "me", how: "how", project: "home" };
+const TABS = { home: "home", new: "new", me: "me", how: "how", project: "home", user: "" };
 function route() {
   const hash = location.hash || "#/";
   let name = "home", arg = null;
   if (hash.startsWith("#/project/")) { name = "project"; arg = decodeURIComponent(hash.slice(10)); }
+  else if (hash.startsWith("#/u/")) { name = "user"; arg = decodeURIComponent(hash.slice(4)); }
   else if (hash === "#/new") name = "new";
   else if (hash === "#/me") name = "me";
   else if (hash === "#/how") name = "how";
@@ -1415,6 +1986,7 @@ function route() {
   if (name === "home") loadList(false);
   else if (name === "project") { if (CONTRACT_ADDRESS === ZERO) clear(projectView).appendChild(h("div", { class: "empty", text: "Set the contract address first (wallet menu)." })); else renderProject(arg, false); }
   else if (name === "me") loadMe();
+  else if (name === "user") { if (CONTRACT_ADDRESS === ZERO) clear($("userView")).appendChild(h("div", { class: "empty", text: "Set the contract address first." })); else renderUser(arg); }
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);

@@ -941,6 +941,12 @@ class BidRoom(gl.Contract):
             "reasoning": str(result.get("reasoning", ""))[:1200],
             "ruled_at": now.isoformat(),
             "attempt": int(ms["attempts"]) + 1,
+            "delivery_url": ms.get("delivery_url", ""),
+            "note": ms.get("note", ""),
+            "complaint": ms.get("dispute_reason", ""),
+            "submitted_at": ms.get("submitted_at", ""),
+            "disputed_at": ms.get("disputed_at", ""),
+            "ruled_by": self._sender(),
         })
         if ruling == RULING_ACCEPTED:
             self._settle_milestone(project, ms, int(ms["amount"]), MS_APPROVED, "dispute_accepted")
@@ -975,6 +981,12 @@ class BidRoom(gl.Contract):
             "reasoning": "No ruling was reached in time; the milestone is split evenly.",
             "ruled_at": self._now_utc().isoformat(),
             "attempt": int(ms["attempts"]) + 1,
+            "delivery_url": ms.get("delivery_url", ""),
+            "note": ms.get("note", ""),
+            "complaint": ms.get("dispute_reason", ""),
+            "submitted_at": ms.get("submitted_at", ""),
+            "disputed_at": ms.get("disputed_at", ""),
+            "ruled_by": self._sender(),
         })
         self._settle_milestone(project, ms, int(ms["amount"]) // 2, MS_SPLIT, "dispute_timeout_split")
         self._save(project)
@@ -1184,6 +1196,37 @@ class BidRoom(gl.Contract):
     @gl.public.view
     def get_history(self, project_id: str) -> str:
         return json.dumps(self._load(project_id)["history"], sort_keys=True)
+
+    @gl.public.view
+    def get_activity(self, limit: int) -> str:
+        count = max(1, min(int(limit), 50))
+        events = []
+        for p_index, project in enumerate(self._all_projects()):
+            for e_index, event in enumerate(project["history"]):
+                row = dict(event)
+                row["project_id"] = project["project_id"]
+                row["title"] = project["title"]
+                events.append(((event["t"], p_index, e_index), row))
+        events.sort(key=lambda pair: pair[0], reverse=True)
+        return json.dumps([row for _, row in events[:count]], sort_keys=True)
+
+    @gl.public.view
+    def get_address_projects(self, address: str) -> str:
+        me = self._key(address)
+        now = self._now_utc()
+        rows = []
+        for project in reversed(self._all_projects()):
+            roles = self._roles(project, me)
+            if not roles:
+                continue
+            row = self._summary(project, now)
+            row["roles"] = roles
+            row["released"] = project["released"]
+            row["locked"] = project["locked"]
+            mine = [b for b in project["bids"] if b["bidder"] == me]
+            row["my_bids"] = [{"index": b["index"], "price": b["price"], "minutes": b["minutes"], "status": b["status"]} for b in mine]
+            rows.append(row)
+        return json.dumps(rows, sort_keys=True)
 
     @gl.public.view
     def get_selection(self, project_id: str) -> str:
