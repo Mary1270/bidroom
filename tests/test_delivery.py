@@ -155,10 +155,12 @@ class TestMilestones(Base):
         self.assertEqual(self.ms()["status"], "approved")
         self.assertEqual(get(self.c)["history"][-1]["event"], "milestone_auto_approved")
 
-    def test_client_may_still_approve_after_the_window(self):
+    def test_client_cannot_approve_after_the_window_only_the_claim_settles(self):
         self.submit()
         CLOCK.minutes(31)
-        self.as_(CLIENT).approve_milestone("project_0", 0)
+        with self.assertRaises(UserError):
+            self.as_(CLIENT).approve_milestone("project_0", 0)
+        self.as_(CLIENT).claim_unreviewed("project_0", 0)
         self.assertEqual(self.ms()["status"], "approved")
 
     def test_dispute_needs_a_reason_and_must_be_in_time(self):
@@ -206,11 +208,12 @@ class TestRefund(Base):
         self.assertEqual(int(self.c.get_pending_withdrawal(CLIENT)), BUDGET - PRICE + 2000 + BOND)
         assert_balanced(self, self.c)
 
-    def test_late_submission_before_anyone_refunds_still_counts(self):
+    def test_late_submission_is_refused_once_the_refund_path_is_open(self):
         CLOCK.minutes(500)
-        self.submit()
         with self.assertRaises(UserError):
-            self.as_(STRANGER).refund_undelivered("project_0")
+            self.submit()
+        self.as_(STRANGER).refund_undelivered("project_0")
+        self.assertEqual(get(self.c)["status"], "failed")
 
     def test_no_refund_while_work_is_waiting_for_review(self):
         self.submit()

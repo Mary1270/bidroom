@@ -4,8 +4,14 @@ A freelance project auction on GenLayer. A client locks a budget and writes how 
 
 Single Intelligent Contract (`contract.py`), no-build frontend (`index.html`), offline test suite (`tests/`).
 
-- Contract on GenLayer Studio: `0x6e15D62F640a8D0B3AD360207380134bFfCA52E2` ([explorer](https://explorer-studio.genlayer.com/address/0x6e15D62F640a8D0B3AD360207380134bFfCA52E2))
+- Contract on GenLayer Studio (v1.1.0): `0x441c7975b17c106CFab6BFA9D80980dc571F365F` ([explorer](https://explorer-studio.genlayer.com/address/0x441c7975b17c106CFab6BFA9D80980dc571F365F))
+- Superseded deployments: v1.0.0 `0x6e15D62F640a8D0B3AD360207380134bFfCA52E2`, interim `0x509DF28ed00cB59883660C189DA125A6c1e25d12`
 - Live app: https://mary1270.github.io/bidroom/
+
+## Changelog
+
+- **v1.1.0**: deadline settlement is exclusive. After each deadline only the timeout path can execute (`select_winner`, `decline_award`, `submit_milestone`, `approve_milestone`, `rule_dispute` and `cancel_project` are refused once their timeout counterpart opens), and `get_actions` lists only the open path. 9 new boundary tests.
+- **v1.0.0**: first release.
 
 ## Roles
 
@@ -25,6 +31,21 @@ Single Intelligent Contract (`contract.py`), no-build frontend (`index.html`), o
 3. **Award.** The winner confirms within the client's window, or declines (half the bond to the client), or stays silent (all of the bond to the client). Losers' bonds and the unused part of the budget are credited immediately.
 4. **Delivery.** Milestones are sequential. The winner submits an https link. The client approves, or stays silent for the review window, which counts as approval. A missed deadline plus grace lets anyone refund the client.
 5. **Dispute.** The client may contest a submitted milestone inside the review window. An AI arbiter fetches the delivered page and judges it against the acceptance text written before bidding opened. It must quote the page verbatim.
+
+## Exclusive deadlines
+
+Every deadline is a hard switch between two settlement paths. Up to and including the deadline only the normal path can execute; one second later only the timeout path can. The contract enforces this on every write, and `get_actions` lists only the path that is open at that moment.
+
+| Deadline | Until the deadline (inclusive) | After the deadline |
+| --- | --- | --- |
+| Bidding window | `place_bid`, `withdraw_bid`, `cancel_project` | `select_winner` (or `expire_unbid` with no bids) |
+| Selection window (24h after bidding) | `select_winner` | `expire_unselected` |
+| Award confirmation | `confirm_award`, `decline_award` | `void_award` |
+| Milestone delivery (deadline + grace) | `submit_milestone` | `refund_undelivered` |
+| Client review | `approve_milestone`, `dispute_milestone` | `claim_unreviewed` |
+| Ruling window (72h after a dispute) | `rule_dispute` | `expire_dispute` |
+
+A late call on the normal path is refused before anything else runs; a late `rule_dispute` or `select_winner` never reaches the model.
 
 ## Money
 
@@ -78,7 +99,7 @@ Open it with `?contract=0xYourAddress` once, or paste the address in the setup c
 python3 -m unittest discover -s tests -v
 ```
 
-No installs needed. The suite uses a small offline stand-in for the GenLayer SDK (`tests/genlayer_stub`). It covers every path above, includes 400 seeded random walks that check money conservation after every call, checks that `get_actions` matches what the contract actually accepts for every role and state, and checks the Studio file format (two header lines, then code).
+No installs needed. The suite uses a small offline stand-in for the GenLayer SDK (`tests/genlayer_stub`). It covers every path above, includes 400 seeded random walks that check money conservation after every call, checks that `get_actions` matches what the contract actually accepts for every role and state, checks both sides of every deadline (the normal path works at the deadline and fails one second later, the timeout path the other way round), and checks the Studio file format (two header lines, then code).
 
 The stub does not run real validators or a real model. Live behaviour must be confirmed on GenLayer Studio.
 

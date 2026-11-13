@@ -881,7 +881,8 @@
 import { createClient, createAccount } from "https://esm.sh/genlayer-js@latest";
 import { studionet } from "https://esm.sh/genlayer-js@latest/chains";
 
-const DEFAULT_CONTRACT_ADDRESS = "0x6e15D62F640a8D0B3AD360207380134bFfCA52E2";
+const SUPERSEDED = ["0x6e15d62f640a8d0b3ad360207380134bffca52e2", "0x509df28ed00cb59883660c189da125a6c1e25d12"];
+const DEFAULT_CONTRACT_ADDRESS = "0x441c7975b17c106CFab6BFA9D80980dc571F365F";
 const ZERO = "0x0000000000000000000000000000000000000000";
 const EXPLORER = "https://explorer-studio.genlayer.com";
 const DEAD = "0x000000000000000000000000000000000000dEaD";
@@ -895,7 +896,7 @@ function resolveContract() {
     const q = new URLSearchParams(location.search).get("contract");
     if (okAddr(q)) { try { localStorage.setItem("bidroom.contract", q); } catch (e) {} return q; }
   } catch (e) {}
-  try { const s = localStorage.getItem("bidroom.contract"); if (okAddr(s)) return s; } catch (e) {}
+  try { const s = localStorage.getItem("bidroom.contract"); if (okAddr(s) && !SUPERSEDED.includes(s.toLowerCase())) return s; } catch (e) {}
   return DEFAULT_CONTRACT_ADDRESS;
 }
 let CONTRACT_ADDRESS = resolveContract();

@@ -436,6 +436,13 @@ class BidRoom(gl.Contract):
         if not project.get("winner") or self._sender() != project["winner"]:
             raise gl.vm.UserError("Only the winning bidder can do this")
 
+    def _open_until(self, deadline, message) -> None:
+        if self._now_utc() > self._parse(deadline):
+            raise gl.vm.UserError(message)
+
+    def _selection_end(self, project) -> datetime.datetime:
+        return self._parse(project["bidding_deadline"]) + datetime.timedelta(minutes=SELECTION_GRACE_MINUTES)
+
     def _require_status(self, project, *allowed) -> None:
         if project["status"] not in allowed:
             raise gl.vm.UserError(f"Not possible while the project is '{project['status']}'")
@@ -605,6 +612,7 @@ class BidRoom(gl.Contract):
         project = self._load(project_id)
         self._require_client(project)
         self._require_status(project, ST_BIDDING)
+        self._open_until(project["bidding_deadline"], "The bidding window has closed; use expire_unbid")
         if self._active_bids(project):
             raise gl.vm.UserError("A project with active bids cannot be cancelled; wait for selection or expiry")
         self._release(project, project["client"], int(project["locked"]), "client")
@@ -685,6 +693,8 @@ class BidRoom(gl.Contract):
         self._require_status(project, ST_BIDDING)
         if self._now_utc() <= self._parse(project["bidding_deadline"]):
             raise gl.vm.UserError("Selection opens when the bidding window closes")
+        if self._now_utc() > self._selection_end(project):
+            raise gl.vm.UserError("The selection window has run out; use expire_unselected")
         active = self._active_bids(project)
         if not active:
             raise gl.vm.UserError("There are no active bids; use expire_unbid to refund the client")
@@ -781,8 +791,7 @@ class BidRoom(gl.Contract):
     def expire_unselected(self, project_id: str) -> str:
         project = self._load(project_id)
         self._require_status(project, ST_BIDDING)
-        limit = self._parse(project["bidding_deadline"]) + datetime.timedelta(minutes=SELECTION_GRACE_MINUTES)
-        if self._now_utc() <= limit:
+        if self._now_utc() <= self._selection_end(project):
             raise gl.vm.UserError("The selection window has not run out yet")
         for bid in self._active_bids(project):
             bid["status"] = "lost"
@@ -817,6 +826,7 @@ class BidRoom(gl.Contract):
         project = self._load(project_id)
         self._require_status(project, ST_AWARDED)
         self._require_winner(project)
+        self._open_until(project["accept_deadline"], "The confirmation window has closed; use void_award")
         bond = int(project["locked"]) - int(project["price"])
         penalty = bond * DECLINE_PENALTY_BPS // BPS
         self._release(project, project["client"], int(project["price"]), "client")
@@ -852,6 +862,7 @@ class BidRoom(gl.Contract):
         number, ms = self._milestone(project, index)
         if ms["status"] != MS_PENDING:
             raise gl.vm.UserError("This milestone was already submitted")
+        self._open_until(ms["hard_deadline"], "The delivery deadline and grace period have passed; use refund_undelivered")
         url = _valid_https_url(delivery_url)
         if url is None:
             raise gl.vm.UserError("delivery_url must be a plain https link (no credentials, no IP address)")
@@ -874,6 +885,7 @@ class BidRoom(gl.Contract):
         number, ms = self._milestone(project, index)
         if ms["status"] != MS_SUBMITTED:
             raise gl.vm.UserError("There is no submitted work to approve")
+        self._open_until(ms["review_deadline"], "The review window has closed; use claim_unreviewed")
         self._settle_milestone(project, ms, int(ms["amount"]), MS_APPROVED, "milestone_approved")
         self._save(project)
         return project["status"]
@@ -918,6 +930,7 @@ class BidRoom(gl.Contract):
         number, ms = self._milestone(project, index)
         if ms["status"] != MS_DISPUTED:
             raise gl.vm.UserError("This milestone is not in dispute")
+        self._open_until(ms["ruling_deadline"], "The ruling window has run out; use expire_dispute")
         ctx = {
             "url": ms["delivery_url"],
             "title": ms["title"],
@@ -1033,7 +1046,7 @@ class BidRoom(gl.Contract):
             else:
                 phase = "selection"
                 waiting = "anyone"
-                deadline = self._plus(bidding_end, SELECTION_GRACE_MINUTES * 60)
+                deadline = self._selection_end(project).isoformat()
         elif status == ST_AWARDED:
             phase = "selection"
             deadline = project["accept_deadline"]
@@ -1079,43 +1092,47 @@ class BidRoom(gl.Contract):
         if status == ST_BIDDING:
             bidding_end = self._parse(project["bidding_deadline"])
             active = self._active_bids(project)
-            if is_client and not active:
+            if now <= bidding_end and is_client and not active:
                 actions.append({"action": "cancel_project"})
             if now <= bidding_end:
                 if not is_client and not has_active and len(active) < MAX_BIDS:
                     actions.append({"action": "place_bid"})
                 if has_active:
                     actions.append({"action": "withdraw_bid"})
+            elif not active:
+                actions.append({"action": "expire_unbid"})
+            elif now <= self._selection_end(project):
+                actions.append({"action": "select_winner"})
             else:
-                actions.append({"action": "select_winner" if active else "expire_unbid"})
-                if now > bidding_end + datetime.timedelta(minutes=SELECTION_GRACE_MINUTES):
-                    actions.append({"action": "expire_unselected"})
+                actions.append({"action": "expire_unselected"})
         elif status == ST_AWARDED:
-            if is_winner:
-                if now <= self._parse(project["accept_deadline"]):
+            if now <= self._parse(project["accept_deadline"]):
+                if is_winner:
                     actions.append({"action": "confirm_award"})
-                actions.append({"action": "decline_award"})
-            if now > self._parse(project["accept_deadline"]):
+                    actions.append({"action": "decline_award"})
+            else:
                 actions.append({"action": "void_award"})
         elif status in (ST_DELIVERY, ST_DISPUTE):
             index = self._current_index(project)
             if index >= 0:
                 ms = project["milestones"][index]
                 if ms["status"] == MS_PENDING:
-                    if is_winner:
-                        actions.append({"action": "submit_milestone", "index": index})
-                    if now > self._parse(ms["hard_deadline"]):
+                    if now <= self._parse(ms["hard_deadline"]):
+                        if is_winner:
+                            actions.append({"action": "submit_milestone", "index": index})
+                    else:
                         actions.append({"action": "refund_undelivered"})
                 elif ms["status"] == MS_SUBMITTED:
-                    if is_client:
-                        actions.append({"action": "approve_milestone", "index": index})
-                        if now <= self._parse(ms["review_deadline"]):
+                    if now <= self._parse(ms["review_deadline"]):
+                        if is_client:
+                            actions.append({"action": "approve_milestone", "index": index})
                             actions.append({"action": "dispute_milestone", "index": index})
-                    if now > self._parse(ms["review_deadline"]):
+                    else:
                         actions.append({"action": "claim_unreviewed", "index": index})
                 elif ms["status"] == MS_DISPUTED:
-                    actions.append({"action": "rule_dispute", "index": index})
-                    if now > self._parse(ms["ruling_deadline"]):
+                    if now <= self._parse(ms["ruling_deadline"]):
+                        actions.append({"action": "rule_dispute", "index": index})
+                    else:
                         actions.append({"action": "expire_dispute", "index": index})
         if self._pending_of(me) > 0:
             actions.append({"action": "withdraw"})

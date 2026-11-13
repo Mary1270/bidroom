@@ -29,6 +29,10 @@ Input: milestone title, acceptance text, the winner's note and the client's comp
 
 All windows are chosen per project in minutes. Milestone deadlines are sequential: when one settles, the next one starts its own clock. A redo after a rejection gets a fresh deadline equal to the grace period.
 
+## Exclusive settlement
+
+Each deadline separates exactly two settlement paths: the normal one is accepted while `now <= deadline`, the timeout one only while `now > deadline`. The pairs are bidding/selection, selection/expire_unselected, confirm or decline/void_award, submit_milestone/refund_undelivered, approve or dispute/claim_unreviewed and rule_dispute/expire_dispute. The guard is checked before any state change or model call, and `get_actions` derives its list from the same comparisons.
+
 ## Known limits
 
 Listed in the README. In short: model variance on close bids, mutable delivery links, public bids, whole-GEN prices.
